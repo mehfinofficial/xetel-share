@@ -33,14 +33,14 @@ Future<void> main(List<String> args) async {
     RefenaScope.withContainer(
       container: container,
       child: TranslationProvider(
-        child: const LocalSendApp(),
+       child: const XetelShareApp(),
       ),
     ),
   );
 }
 
-class LocalSendApp extends StatelessWidget {
-  const LocalSendApp();
+class XetelShareApp extends StatelessWidget {
+  const XetelShareApp();
 
   @override
   Widget build(BuildContext context) {
