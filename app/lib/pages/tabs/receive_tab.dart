@@ -9,17 +9,12 @@ import 'package:localsend_app/util/ip_helper.dart';
 import 'package:localsend_app/widget/animations/initial_fade_transition.dart';
 import 'package:localsend_app/widget/column_list_view.dart';
 import 'package:localsend_app/widget/custom_icon_button.dart';
+import 'package:localsend_app/widget/glass_segmented_control.dart';
 import 'package:localsend_app/widget/local_send_logo.dart';
 import 'package:localsend_app/widget/responsive_list_view.dart';
 import 'package:localsend_app/widget/rotating_widget.dart';
 import 'package:refena_flutter/refena_flutter.dart';
 import 'package:routerino/routerino.dart';
-
-enum _QuickSaveMode {
-  off,
-  favorites,
-  on,
-}
 
 class ReceiveTab extends StatelessWidget {
   const ReceiveTab();
@@ -47,10 +42,12 @@ class ReceiveTab extends StatelessWidget {
                           delay: const Duration(milliseconds: 200),
                           child: const LocalSendLogo(withText: false),
                         ),
+                        const SizedBox(height: 24),
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(vm.serverState?.alias ?? vm.aliasSettings, style: const TextStyle(fontSize: 48)),
                         ),
+                        const SizedBox(height: 8),
                         InitialFadeTransition(
                           duration: const Duration(milliseconds: 300),
                           delay: const Duration(milliseconds: 500),
@@ -70,47 +67,39 @@ class ReceiveTab extends StatelessWidget {
                         children: [
                           Text(t.general.quickSave),
                           const SizedBox(height: 10),
-                          SegmentedButton<_QuickSaveMode>(
-                            multiSelectionEnabled: false,
-                            emptySelectionAllowed: false,
-                            showSelectedIcon: false,
-                            onSelectionChanged: (selection) async {
-                              if (selection.contains(_QuickSaveMode.off)) {
-                                await vm.onSetQuickSave(context, false);
-                                if (context.mounted) {
-                                  await vm.onSetQuickSaveFromFavorites(context, false);
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 320),
+                            child: GlassSegmentedControl(
+                              labels: [
+                                t.receiveTab.quickSave.off,
+                                t.receiveTab.quickSave.favorites,
+                                t.receiveTab.quickSave.on,
+                              ],
+                              selectedIndex: vm.quickSaveSettings
+                                  ? 2
+                                  : vm.quickSaveFromFavoritesSettings
+                                  ? 1
+                                  : 0,
+                              onChanged: (index) async {
+                                switch (index) {
+                                  case 0:
+                                    await vm.onSetQuickSave(context, false);
+                                    if (context.mounted) {
+                                      await vm.onSetQuickSaveFromFavorites(context, false);
+                                    }
+                                  case 1:
+                                    await vm.onSetQuickSave(context, false);
+                                    if (context.mounted) {
+                                      await vm.onSetQuickSaveFromFavorites(context, true);
+                                    }
+                                  case 2:
+                                    await vm.onSetQuickSaveFromFavorites(context, false);
+                                    if (context.mounted) {
+                                      await vm.onSetQuickSave(context, true);
+                                    }
                                 }
-                              } else if (selection.contains(_QuickSaveMode.favorites)) {
-                                await vm.onSetQuickSave(context, false);
-                                if (context.mounted) {
-                                  await vm.onSetQuickSaveFromFavorites(context, true);
-                                }
-                              } else if (selection.contains(_QuickSaveMode.on)) {
-                                await vm.onSetQuickSaveFromFavorites(context, false);
-                                if (context.mounted) {
-                                  await vm.onSetQuickSave(context, true);
-                                }
-                              }
-                            },
-                            selected: {
-                              if (!vm.quickSaveSettings && !vm.quickSaveFromFavoritesSettings) _QuickSaveMode.off,
-                              if (vm.quickSaveFromFavoritesSettings) _QuickSaveMode.favorites,
-                              if (vm.quickSaveSettings) _QuickSaveMode.on,
-                            },
-                            segments: [
-                              ButtonSegment(
-                                value: _QuickSaveMode.off,
-                                label: Text(t.receiveTab.quickSave.off),
-                              ),
-                              ButtonSegment(
-                                value: _QuickSaveMode.favorites,
-                                label: Text(t.receiveTab.quickSave.favorites),
-                              ),
-                              ButtonSegment(
-                                value: _QuickSaveMode.on,
-                                label: Text(t.receiveTab.quickSave.on),
-                              ),
-                            ],
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -123,12 +112,46 @@ class ReceiveTab extends StatelessWidget {
           ),
         ),
         _InfoBox(vm),
+        _BrandMark(),
         _CornerButtons(
           showAdvanced: vm.showAdvanced,
           showHistoryButton: vm.showHistoryButton,
           toggleAdvanced: vm.toggleAdvanced,
         ),
       ],
+    );
+  }
+}
+
+class _BrandMark extends StatelessWidget {
+  const _BrandMark();
+
+  @override
+  Widget build(BuildContext context) {
+    final isDesktop = MediaQuery.of(context).size.width >= 800;
+    final logoSize = isDesktop ? 36.0 : 24.0;
+    final fontSize = isDesktop ? 22.0 : 16.0;
+
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/img/logo-32.png',
+              width: logoSize,
+              height: logoSize,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              t.appName,
+              style: TextStyle(fontSize: fontSize, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

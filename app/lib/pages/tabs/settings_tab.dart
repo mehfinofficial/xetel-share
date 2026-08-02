@@ -747,7 +747,8 @@ extension on ColorMode {
       ColorMode.system => t.settingsTab.general.colorOptions.system,
       ColorMode.localsend => t.appName,
       ColorMode.oled => t.settingsTab.general.colorOptions.oled,
-      ColorMode.yaru => 'Yaru',
+     ColorMode.yaru => 'Yaru',
+      ColorMode.glass => 'Glass',
     };
   }
 }

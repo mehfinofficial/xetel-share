@@ -31,6 +31,8 @@ ThemeData getTheme(ColorMode colorMode, Brightness brightness, DynamicColors? dy
   );
 
   // https://github.com/localsend/localsend/issues/52
+  // Manrope is used as the default brand font (matches the Xetel marketing site);
+  // CJK locales still fall back to a system font since Manrope has no CJK glyphs.
   final String? fontFamily;
   if (checkPlatform([TargetPlatform.windows])) {
     fontFamily = switch (LocaleSettings.currentLocale) {
@@ -38,7 +40,7 @@ ThemeData getTheme(ColorMode colorMode, Brightness brightness, DynamicColors? dy
       AppLocale.ko => 'Malgun Gothic',
       AppLocale.zhCn => 'Microsoft YaHei UI',
       AppLocale.zhHk || AppLocale.zhTw => 'Microsoft JhengHei UI',
-      _ => 'Segoe UI Variable Display',
+      _ => 'Manrope',
     };
   } else if (checkPlatform([TargetPlatform.linux])) {
     fontFamily = switch (LocaleSettings.currentLocale) {
@@ -46,10 +48,10 @@ ThemeData getTheme(ColorMode colorMode, Brightness brightness, DynamicColors? dy
       AppLocale.ko => 'Noto Sans CJK KR',
       AppLocale.zhCn => 'Noto Sans CJK SC',
       AppLocale.zhHk || AppLocale.zhTw => 'Noto Sans CJK TC',
-      _ => 'Noto Sans',
+      _ => 'Manrope',
     };
   } else {
-    fontFamily = null;
+    fontFamily = 'Manrope';
   }
 
   return ThemeData(
@@ -153,6 +155,7 @@ ColorScheme _determineColorScheme(ColorMode mode, Brightness brightness, Dynamic
     ColorMode.oled => (dynamicColors?.dark ?? defaultColorScheme).copyWith(
       surface: Colors.black,
     ),
+    ColorMode.glass => null,
     ColorMode.yaru => throw 'Should reach here',
   };
 
