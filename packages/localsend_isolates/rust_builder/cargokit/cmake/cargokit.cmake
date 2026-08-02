@@ -1,4 +1,5 @@
 SET(cargokit_cmake_root "${CMAKE_CURRENT_LIST_DIR}/..")
+SET(cargokit_own_cmake_dir "${CMAKE_CURRENT_LIST_DIR}")
 
 # Workaround for https://github.com/dart-lang/pub/issues/4010
 get_filename_component(cargokit_cmake_root "${cargokit_cmake_root}" REALPATH)
@@ -33,10 +34,16 @@ function(apply_cargokit target manifest_dir lib_name any_symbol_name)
         set(CARGOKIT_TARGET_PLATFORM "windows-x64")
     endif()
 
+    if(WIN32)
+        execute_process(COMMAND powershell -ExecutionPolicy Bypass -File "${cargokit_own_cmake_dir}/resolve_symlinks.ps1" "${CMAKE_CURRENT_SOURCE_DIR}" OUTPUT_VARIABLE CARGOKIT_RESOLVED_SOURCE_DIR OUTPUT_STRIP_TRAILING_WHITESPACE)
+    else()
+        set(CARGOKIT_RESOLVED_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+    endif()
+
     set(CARGOKIT_ENV
         "CARGOKIT_CMAKE=${CMAKE_COMMAND}"
         "CARGOKIT_CONFIGURATION=$<CONFIG>"
-        "CARGOKIT_MANIFEST_DIR=${CMAKE_CURRENT_SOURCE_DIR}/${manifest_dir}"
+        "CARGOKIT_MANIFEST_DIR=${CARGOKIT_RESOLVED_SOURCE_DIR}/${manifest_dir}"
         "CARGOKIT_TARGET_TEMP_DIR=${CARGOKIT_TEMP_DIR}"
         "CARGOKIT_OUTPUT_DIR=${CARGOKIT_OUTPUT_DIR}"
         "CARGOKIT_TARGET_PLATFORM=${CARGOKIT_TARGET_PLATFORM}"

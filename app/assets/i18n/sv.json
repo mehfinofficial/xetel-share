@@ -1,6 +1,6 @@
 {
   "locale": "Svenska",
-  "appName": "LocalSend",
+  "appName": "Xetel Share",
   "general": {
     "accept": "Acceptera",
     "accepted": "Accepterad",
@@ -108,7 +108,7 @@
       "minimizeToTray": "Minimera till systemfältet eller menyraden vid stängning",
       "launchAtStartup": "Starta automatiskt efter inloggning",
       "launchMinimized": "Automatisk start: starta dolt",
-      "showInContextMenu": "Visa LocalSend i snabbmenyn",
+      "showInContextMenu": "Visa Xetel Share i snabbmenyn",
       "animations": "Animationer"
     },
     "receive": {
@@ -149,7 +149,7 @@
     },
     "other": {
       "title": "Övrigt",
-      "support": "Stöd LocalSend",
+      "support": "Stöd Xetel Share",
       "donate": "Donera",
       "privacyPolicy": "Sekretesspolicy",
       "termsOfUse": "Användarvillkor"
@@ -177,7 +177,7 @@
   },
   "networkInterfacesPage": {
     "title": "Nätverksgränssnitt",
-    "info": "Som standard använder LocalSend alla tillgängliga nätverksgränssnitt. Du kan utesluta oönskade nätverk här. Starta om servern för att tillämpa ändringarna.",
+    "info": "Som standard använder Xetel Share alla tillgängliga nätverksgränssnitt. Du kan utesluta oönskade nätverk här. Starta om servern för att tillämpa ändringarna.",
     "preview": "Förhandsvisning",
     "whitelist": "Tillåtelselista",
     "blacklist": "Blockeringslista"
@@ -215,7 +215,7 @@
   "receiveOptionsPage": {
     "title": "Alternativ",
     "destination": "@:settingsTab.receive.destination",
-    "appDirectory": "(LocalSend-mappen)",
+    "appDirectory": "(Xetel Share-mappen)",
     "saveToGallery": "@:settingsTab.receive.saveToGallery",
     "saveToGalleryOff": "Inaktiverades automatiskt eftersom överföringen innehåller mappar."
   },
@@ -265,13 +265,13 @@
     "autoAccept": "Acceptera förfrågningar automatiskt",
     "requirePin": "Kräv PIN-kod",
     "pinHint": "PIN-koden är \"{pin}\"",
-    "encryptionHint": "LocalSend använder ett självsignerat certifikat. Du måste godkänna det i webbläsaren.",
+    "encryptionHint": "Xetel Share använder ett självsignerat certifikat. Du måste godkänna det i webbläsaren.",
     "pendingRequests": "Väntande förfrågningar: {n}"
   },
   "aboutPage": {
-    "title": "Om LocalSend",
+    "title": "Om Xetel Share",
     "description": [
-      "LocalSend är en fri app med öppen källkod som gör det möjligt att säkert dela filer och meddelanden med enheter i närheten via det lokala nätverket, utan internetanslutning.",
+      "Xetel Share är en fri app med öppen källkod som gör det möjligt att säkert dela filer och meddelanden med enheter i närheten via det lokala nätverket, utan internetanslutning.",
       "Appen finns för Android, iOS, macOS, Windows och Linux. Alla nedladdningsalternativ finns på den officiella webbplatsen."
     ],
     "author": "Upphovsperson",
@@ -281,7 +281,7 @@
   },
   "donationPage": {
     "title": "Donera",
-    "info": "LocalSend är en fri app med öppen källkod och utan annonser. Om du gillar appen kan du stödja utvecklingen genom att donera.",
+    "info": "Xetel Share är en fri app med öppen källkod och utan annonser. Om du gillar appen kan du stödja utvecklingen genom att donera.",
     "donate": "Donera {amount}",
     "thanks": "Tack så mycket!",
     "restore": "Återställ köp"
@@ -427,7 +427,7 @@
     },
     "localNetworkUnauthorized": {
       "title": "@:dialogs.noPermission.title",
-      "description": "LocalSend kan inte hitta andra enheter utan behörighet att söka i det lokala nätverket. Bevilja behörigheten i inställningarna.",
+      "description": "Xetel Share kan inte hitta andra enheter utan behörighet att söka i det lokala nätverket. Bevilja behörigheten i inställningarna.",
       "gotoSettings": "Inställningar"
     },
     "messageInput": {
@@ -474,7 +474,7 @@
       "title": "Sändningslägen",
       "single": "Skickar filer till en mottagare. Valet rensas när filöverföringen är klar.",
       "multiple": "Skickar filer till flera mottagare. Valet rensas inte när filöverföringen är klar.",
-      "link": "Mottagare som inte har LocalSend installerat kan ladda ner de valda filerna genom att öppna länken i sin webbläsare."
+      "link": "Mottagare som inte har Xetel Share installerat kan ladda ner de valda filerna genom att öppna länken i sin webbläsare."
     },
     "zoom": {
       "title": "URL"
@@ -487,7 +487,7 @@
   "tray": {
     "@info": "Apples riktlinjer är mycket strikta gällande formuleringen ”stäng”.",
     "open": "@:general.open",
-    "close": "Avsluta LocalSend",
+    "close": "Avsluta Xetel Share",
     "closeWindows": "Avsluta"
   },
   "web": {

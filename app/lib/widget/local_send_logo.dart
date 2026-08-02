@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:localsend_app/gen/assets.gen.dart';
+import 'package:localsend_app/gen/strings.g.dart';
+import 'package:localsend_app/widget/lava_loader.dart';
 
 class LocalSendLogo extends StatelessWidget {
   final bool withText;
@@ -8,24 +9,15 @@ class LocalSendLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final logo = ColorFiltered(
-      colorFilter: ColorFilter.mode(
-        Theme.of(context).colorScheme.primary,
-        BlendMode.srcATop,
-      ),
-      child: Assets.img.logo512.image(
-        width: 200,
-        height: 200,
-      ),
-    );
+    final logo = const LavaLoader(size: 150);
 
     if (withText) {
       return Column(
         children: [
           logo,
-          const Text(
-            'LocalSend',
-            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
+          Text(
+            t.appName,
+            style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
         ],
