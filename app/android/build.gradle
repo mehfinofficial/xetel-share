@@ -24,6 +24,25 @@ subprojects {
     }
 }
 
+// Force consistent JVM target (17) across all Kotlin + Java compile tasks
+subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty("android")) {
+            project.android {
+                compileOptions {
+                    sourceCompatibility JavaVersion.VERSION_17
+                    targetCompatibility JavaVersion.VERSION_17
+                }
+            }
+        }
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+        }
+    }
+}
+
 
 // Disable the linker build-id in the "jni" pub package's native library.
 // https://github.com/localsend/localsend/issues/3219
