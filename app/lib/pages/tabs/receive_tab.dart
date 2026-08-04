@@ -65,7 +65,7 @@ class ReceiveTab extends StatelessWidget {
                     child: Center(
                       child: Column(
                         children: [
-                          Text(t.general.quickSave),
+                          const Text('Quick Receive'),
                           const SizedBox(height: 10),
                           ConstrainedBox(
                             constraints: const BoxConstraints(maxWidth: 320),

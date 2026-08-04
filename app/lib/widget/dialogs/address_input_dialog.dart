@@ -10,7 +10,6 @@ import 'package:localsend_app/provider/http_provider.dart';
 import 'package:localsend_app/provider/last_devices.provider.dart';
 import 'package:localsend_app/provider/local_ip_provider.dart';
 import 'package:localsend_app/provider/settings_provider.dart';
-import 'package:localsend_app/widget/dialogs/error_dialog.dart';
 import 'package:localsend_isolates/model/device.dart';
 import 'package:localsend_isolates/rust/api/model.dart';
 import 'package:localsend_isolates/util/rust.dart';
@@ -40,8 +39,8 @@ class AddressInputDialog extends StatefulWidget {
 }
 
 class _AddressInputDialogState extends State<AddressInputDialog> with Refena {
-  final _selected = List.generate(_InputMode.values.length, (index) => index == 0);
-  _InputMode _mode = _InputMode.hashtag;
+  final _selected = List.generate(_InputMode.values.length, (index) => _InputMode.values[index] == _InputMode.ip);
+  _InputMode _mode = _InputMode.ip;
   String _input = '';
   bool _fetching = false;
   String? _error;
@@ -215,25 +214,27 @@ class _AddressInputDialogState extends State<AddressInputDialog> with Refena {
           if (_error != null)
             Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: Row(
-                children: [
-                  Text(t.general.error, style: TextStyle(color: Theme.of(context).colorScheme.warning)),
-                  if (_error != null) ...[
-                    const SizedBox(width: 5),
-                    InkWell(
-                      onTap: () async {
-                        await showDialog(
-                          context: context,
-                          builder: (_) => ErrorDialog(error: _error!),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Icon(Icons.info, color: Theme.of(context).colorScheme.warning, size: 20),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.warning.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Theme.of(context).colorScheme.warning.withValues(alpha: 0.4)),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(Icons.error_outline, color: Theme.of(context).colorScheme.warning, size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        // Couldn't reach that address / device didn't respond as expected.
+                        '${t.general.error}: ${_error!.length > 200 ? '${_error!.substring(0, 200)}…' : _error!}',
+                        style: TextStyle(color: Theme.of(context).colorScheme.warning, fontSize: 13),
                       ),
                     ),
                   ],
-                ],
+                ),
               ),
             ),
         ],
