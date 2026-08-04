@@ -279,12 +279,12 @@ class PersistenceService {
     await _prefs.setString(_aliasKey, alias);
   }
 
-  ThemeMode getTheme() {
+    ThemeMode getTheme() {
     final value = _prefs.getString(_themeKey);
     if (value == null) {
-      return ThemeMode.system;
+      return ThemeMode.light;
     }
-    return ThemeMode.values.firstWhereOrNull((theme) => theme.name == value) ?? ThemeMode.system;
+    return ThemeMode.values.firstWhereOrNull((theme) => theme.name == value) ?? ThemeMode.light;
   }
 
   Future<void> setTheme(ThemeMode theme) async {

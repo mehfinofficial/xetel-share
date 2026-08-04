@@ -42,7 +42,7 @@ class TranslationsEnIn extends Translations with BaseTranslations<AppLocale, Tra
   @override
   String get locale => 'English(India)';
   @override
-  String get appName => 'LocalSend';
+   String get appName => 'Xetel Share';
   @override
   late final _Translations$general$en_IN general = _Translations$general$en_IN._(_root);
   @override
