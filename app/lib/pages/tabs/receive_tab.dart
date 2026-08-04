@@ -52,8 +52,11 @@ class ReceiveTab extends StatelessWidget {
                           duration: const Duration(milliseconds: 300),
                           delay: const Duration(milliseconds: 500),
                           child: Text(
-                            vm.serverState == null ? t.general.offline : vm.localIps.map((ip) => '#${ip.visualId}').toSet().join(' '),
-                            style: const TextStyle(fontSize: 24),
+                            vm.hasConnection ? 'Ready to connect' : 'Not connected',
+                            style: TextStyle(
+                              fontSize: 24,
+                              color: vm.hasConnection ? Colors.green : Colors.red,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -231,6 +234,18 @@ class _InfoBox extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(right: 30),
                         child: SelectableText(vm.serverState?.alias ?? '-'),
+                      ),
+                    ],
+                  ),
+                  TableRow(
+                    children: [
+                      const Text('Hashtag'),
+                      const SizedBox(width: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 30),
+                        child: SelectableText(
+                          vm.localIps.isEmpty ? '-' : vm.localIps.map((ip) => '#${ip.visualId}').toSet().join(' '),
+                        ),
                       ),
                     ],
                   ),

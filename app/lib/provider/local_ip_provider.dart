@@ -16,15 +16,23 @@ final _logger = Logger('NetworkInfo');
 final localIpProvider = ReduxProvider<LocalIpService, NetworkState>((ref) {
   return LocalIpService(
     ref.notifier(settingsProvider),
+    ref.notifier(hasConnectionProvider),
   );
 });
 
+/// True when the OS reports an active connection (Wi-Fi, ethernet, mobile data, etc).
+/// This is what actually goes false when Wi-Fi is switched off, unlike `localIps`
+/// which can stay populated because of other adapters (VPN, virtual switches, ...).
+final hasConnectionProvider = StateProvider<bool>((ref) => true, debugLabel: 'hasConnectionProvider');
+
 StreamSubscription? _subscription;
+Timer? _pollTimer;
 
 class LocalIpService extends ReduxNotifier<NetworkState> {
   final SettingsService _settingsService;
+  final dynamic _hasConnectionNotifier;
 
-  LocalIpService(this._settingsService);
+  LocalIpService(this._settingsService, this._hasConnectionNotifier);
 
   @override
   NetworkState init() {
@@ -45,10 +53,16 @@ class InitLocalIpAction extends ReduxAction<LocalIpService, NetworkState> {
     if (!kIsWeb) {
       // ignore: discarded_futures
       _subscription?.cancel();
+      _pollTimer?.cancel();
 
       if (checkPlatform([TargetPlatform.windows])) {
         // https://github.com/localsend/localsend/issues/12
         // https://github.com/localsend/localsend/issues/78
+        // onConnectivityChanged is unreliable on Windows, so poll instead to keep
+        // the connection status live (e.g. Wi-Fi toggled off/on).
+        _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) async {
+          await dispatchAsync(FetchLocalIpAction());
+        });
       } else {
         _subscription = Connectivity().onConnectivityChanged.listen((_) async {
           await dispatchAsync(FetchLocalIpAction());
@@ -69,6 +83,17 @@ class InitLocalIpAction extends ReduxAction<LocalIpService, NetworkState> {
 class FetchLocalIpAction extends AsyncReduxAction<LocalIpService, NetworkState> {
   @override
   Future<NetworkState> reduce() async {
+    // Check OS-level connectivity directly, since a stale/virtual adapter IP
+    // can otherwise make it look like we're still connected.
+    bool hasConnection = true;
+    try {
+      final result = await Connectivity().checkConnectivity();
+      hasConnection = !result.contains(ConnectivityResult.none);
+    } catch (e) {
+      _logger.warning('Failed to check connectivity', e);
+    }
+    notifier._hasConnectionNotifier.setState((_) => hasConnection);
+
     return NetworkState(
       localIps: await _getIp(
         whitelist: notifier._settingsService.state.networkWhitelist,

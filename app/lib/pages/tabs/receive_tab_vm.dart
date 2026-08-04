@@ -21,6 +21,7 @@ class ReceiveTabVm {
   final bool quickSaveFromFavoritesSettings;
   final ServerState? serverState;
   final List<String> localIps;
+  final bool hasConnection;
   final bool showAdvanced;
   final bool showHistoryButton;
   final Future<void> Function() toggleAdvanced;
@@ -33,6 +34,7 @@ class ReceiveTabVm {
     required this.quickSaveFromFavoritesSettings,
     required this.serverState,
     required this.localIps,
+    required this.hasConnection,
     required this.showAdvanced,
     required this.showHistoryButton,
     required this.toggleAdvanced,
@@ -44,6 +46,7 @@ class ReceiveTabVm {
 final receiveTabVmProvider = ViewProvider((ref) {
   final (alias, quickSave, quickSaveFromFavorites) = ref.watch(settingsProvider.select((s) => (s.alias, s.quickSave, s.quickSaveFromFavorites)));
   final networkInfo = ref.watch(localIpProvider).localIps;
+  final hasConnection = ref.watch(hasConnectionProvider);
   final serverState = ref.watch(serverProvider);
   final showAdvanced = ref.watch(_showAdvancedProvider);
   final showHistoryButton = ref.watch(_showHistoryButtonProvider);
@@ -54,6 +57,7 @@ final receiveTabVmProvider = ViewProvider((ref) {
     quickSaveFromFavoritesSettings: quickSaveFromFavorites,
     serverState: serverState,
     localIps: networkInfo,
+    hasConnection: hasConnection,
     showAdvanced: showAdvanced,
     showHistoryButton: showHistoryButton,
     toggleAdvanced: () async {
