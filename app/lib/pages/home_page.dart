@@ -131,24 +131,6 @@ class _HomePageState extends State<HomePage> with Refena {
                             SettingsTab(),
                           ],
                         ),
-                        if (sizingInformation.isMobile)
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(24, 16, 24, 0),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset('assets/img/logo-32.png', width: 24, height: 24),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    t.appName,
-                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
                         if (_dragAndDropIndicator)
                           Container(
                             width: double.infinity,

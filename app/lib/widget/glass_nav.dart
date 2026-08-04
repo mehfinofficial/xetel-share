@@ -47,7 +47,7 @@ class GlassBottomNav extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32),
-              color: (isDark ? Colors.black : Colors.white).withValues(alpha: isDark ? 0.35 : 0.55),
+               color: (isDark ? const Color(0xFF1E1E22) : Colors.white).withValues(alpha: isDark ? 0.55 : 0.55),
               border: Border.all(
                 color: Colors.white.withValues(alpha: isDark ? 0.10 : 0.65),
                 width: 1,
@@ -164,7 +164,7 @@ class GlassNavRail extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
-              color: (isDark ? Colors.black : Colors.white).withValues(alpha: isDark ? 0.35 : 0.55),
+             color: (isDark ? const Color(0xFF1E1E22) : Colors.white).withValues(alpha: isDark ? 0.55 : 0.55),
               border: Border.all(
                 color: Colors.white.withValues(alpha: isDark ? 0.10 : 0.65),
                 width: 1,
