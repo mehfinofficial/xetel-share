@@ -143,6 +143,13 @@ extension InputDecorationThemeExt on InputDecorationThemeData {
   BorderRadius get borderRadius => _borderRadius;
 }
 
+/// Material 3's fromSeed() deliberately lightens the seed color for dark
+/// schemes (accessibility tone-shifting), which turns our brand teal into a
+/// washed-out mint in dark mode. Pin it to a deep, premium teal instead so
+/// dark mode matches the richness of the light theme's primary color.
+const _darkPrimaryOverride = Color(0xFF0FA391);
+const _darkOnPrimaryOverride = Colors.white;
+
 ColorScheme _determineColorScheme(ColorMode mode, Brightness brightness, DynamicColors? dynamicColors) {
   final defaultColorScheme = ColorScheme.fromSeed(
     seedColor: Colors.teal,
@@ -159,7 +166,19 @@ ColorScheme _determineColorScheme(ColorMode mode, Brightness brightness, Dynamic
     ColorMode.yaru => throw 'Should reach here',
   };
 
-  return colorScheme ?? defaultColorScheme;
+  final resolved = colorScheme ?? defaultColorScheme;
+
+  // Only override our own seeded/oled schemes, not the user's OS dynamic
+  // accent color (ColorMode.system) — that one should stay as-is.
+  final usesBrandSeed = mode == ColorMode.localsend || mode == ColorMode.oled;
+  if (usesBrandSeed && brightness == Brightness.dark) {
+    return resolved.copyWith(
+      primary: _darkPrimaryOverride,
+      onPrimary: _darkOnPrimaryOverride,
+    );
+  }
+
+  return resolved;
 }
 
 ThemeData _getYaruTheme(Brightness brightness) {
