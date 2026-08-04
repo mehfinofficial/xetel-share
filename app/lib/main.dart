@@ -9,6 +9,7 @@ import 'package:localsend_app/pages/home_page.dart';
 import 'package:localsend_app/provider/local_ip_provider.dart';
 import 'package:localsend_app/provider/settings_provider.dart';
 import 'package:localsend_app/util/ui/dynamic_colors.dart';
+import 'package:localsend_app/widget/custom_title_bar.dart';
 import 'package:localsend_app/widget/watcher/life_cycle_watcher.dart';
 import 'package:localsend_app/widget/watcher/shortcut_watcher.dart';
 import 'package:localsend_app/widget/watcher/tray_watcher.dart';
@@ -75,7 +76,7 @@ class XetelShareApp extends StatelessWidget {
               theme: getTheme(colorMode, Brightness.light, dynamicColors),
               darkTheme: getTheme(colorMode, Brightness.dark, dynamicColors),
               themeMode: colorMode == ColorMode.oled ? ThemeMode.dark : themeMode,
-              builder: (context, child) => WindowsTitleBarWatcher(child: child!),
+              builder: (context, child) => CustomTitleBar(child: WindowsTitleBarWatcher(child: child!)),
               navigatorKey: Routerino.navigatorKey,
               home: RouterinoHome(
                 builder: () => const HomePage(

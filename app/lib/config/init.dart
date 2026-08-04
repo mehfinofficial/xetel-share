@@ -129,6 +129,10 @@ Future<RefenaContainer> preInit(List<String> args) async {
 
     // initialize size and position
     await WindowManager.instance.ensureInitialized();
+    if (defaultTargetPlatform == TargetPlatform.windows) {
+      // Native caption is replaced by CustomTitleBar (see main.dart).
+      await WindowManager.instance.setTitleBarStyle(TitleBarStyle.hidden, windowButtonVisibility: false);
+    }
     await WindowDimensionsController(persistenceService).initDimensionsConfiguration();
     if (args.contains(startHiddenFlag)) {
       // keep this app hidden

@@ -6,6 +6,7 @@ import 'package:localsend_app/pages/receive_history_page.dart';
 import 'package:localsend_app/pages/tabs/receive_tab_vm.dart';
 import 'package:localsend_app/provider/animation_provider.dart';
 import 'package:localsend_app/util/ip_helper.dart';
+import 'package:localsend_app/util/native/platform_check.dart';
 import 'package:localsend_app/widget/animations/initial_fade_transition.dart';
 import 'package:localsend_app/widget/column_list_view.dart';
 import 'package:localsend_app/widget/custom_icon_button.dart';
@@ -131,9 +132,14 @@ class _BrandMark extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (checkPlatform([TargetPlatform.windows])) {
+      // Windows shows the brand in CustomTitleBar instead (true top-left of the window).
+      return const SizedBox.shrink();
+    }
+
     final isDesktop = MediaQuery.of(context).size.width >= 800;
-    final logoSize = isDesktop ? 36.0 : 24.0;
-    final fontSize = isDesktop ? 22.0 : 16.0;
+    final logoSize = isDesktop ? 44.0 : 24.0;
+    final fontSize = isDesktop ? 26.0 : 16.0;
 
     return Align(
       alignment: Alignment.topLeft,
