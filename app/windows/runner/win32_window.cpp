@@ -272,7 +272,16 @@ void Win32Window::OnDestroy() {
   // No-op; provided for subclasses.
 }
 
+void Win32Window::SetTitleBarDarkMode(HWND const window, bool dark_mode) {
+  BOOL enable_dark_mode = dark_mode;
+  DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE,
+                        &enable_dark_mode, sizeof(enable_dark_mode));
+}
+
 void Win32Window::UpdateTheme(HWND const window) {
+  // This is only the startup / OS-theme-changed default. Once Flutter is
+  // up, XetelShareApp overrides this via the "setTitleBarDarkMode" platform
+  // channel call to match the app's own theme setting.
   DWORD light_mode;
   DWORD light_mode_size = sizeof(light_mode);
   LSTATUS result = RegGetValue(HKEY_CURRENT_USER, kGetPreferredBrightnessRegKey,
@@ -281,8 +290,6 @@ void Win32Window::UpdateTheme(HWND const window) {
                                &light_mode_size);
 
   if (result == ERROR_SUCCESS) {
-    BOOL enable_dark_mode = light_mode == 0;
-    DwmSetWindowAttribute(window, DWMWA_USE_IMMERSIVE_DARK_MODE,
-                          &enable_dark_mode, sizeof(enable_dark_mode));
+    SetTitleBarDarkMode(window, light_mode == 0);
   }
 }

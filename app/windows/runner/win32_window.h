@@ -55,6 +55,12 @@ class Win32Window {
   // Return a RECT representing the bounds of the current client area.
   RECT GetClientArea();
 
+  // Force the window frame's title bar into dark or light mode, overriding
+  // the OS-wide default. Exposed so Flutter can sync the title bar to the
+  // app's own theme setting (light/dark/system) rather than only the
+  // Windows system theme.
+  static void SetTitleBarDarkMode(HWND const window, bool dark_mode);
+
  protected:
   // Processes and route salient window messages for mouse handling,
   // size change and DPI. Delegates handling of these to member overloads that

@@ -4,6 +4,12 @@
 
 #include "flutter/generated_plugin_registrant.h"
 
+namespace {
+// Must match the MethodChannel name used in
+// lib/util/native/windows_title_bar.dart.
+constexpr char kWindowChannelName[] = "com.xetel.share/window";
+}  // namespace
+
 FlutterWindow::FlutterWindow(const flutter::DartProject& project)
     : project_(project) {}
 
@@ -26,6 +32,28 @@ bool FlutterWindow::OnCreate() {
   }
   RegisterPlugins(flutter_controller_->engine());
   SetChildContent(flutter_controller_->view()->GetNativeWindow());
+
+  // Let Flutter (via XetelShareApp) force the native title bar to follow
+  // the app's own theme setting instead of only the OS-wide theme.
+  window_channel_ = std::make_unique<flutter::MethodChannel<flutter::EncodableValue>>(
+      flutter_controller_->engine()->messenger(), kWindowChannelName,
+      &flutter::StandardMethodCodec::GetInstance());
+  window_channel_->SetMethodCallHandler(
+      [this](const flutter::MethodCall<flutter::EncodableValue>& call,
+             std::unique_ptr<flutter::MethodResult<flutter::EncodableValue>> result) {
+        if (call.method_name().compare("setTitleBarDarkMode") == 0) {
+          const auto* dark_mode = std::get_if<bool>(call.arguments());
+          if (dark_mode == nullptr) {
+            result->Error("invalid_argument", "Expected a bool argument");
+            return;
+          }
+          Win32Window::SetTitleBarDarkMode(GetHandle(), *dark_mode);
+          result->Success();
+        } else {
+          result->NotImplemented();
+        }
+      });
+
   return true;
 }
 
