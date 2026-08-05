@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:localsend_app/widget/liquid_glass.dart';
 
 /// Shared destination model used by both [GlassNavRail] (desktop/tablet)
 /// and [GlassBottomNav] (mobile).
@@ -34,45 +33,26 @@ class GlassBottomNav extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return SafeArea(
       minimum: const EdgeInsets.fromLTRB(24, 0, 24, 16),
-      child: ClipRRect(
+      child: LiquidGlassContainer(
         borderRadius: BorderRadius.circular(32),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
-          child: Container(
-            height: 64,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(32),
-               color: (isDark ? const Color(0xFF1E1E22) : Colors.white).withValues(alpha: isDark ? 0.55 : 0.55),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: isDark ? 0.10 : 0.65),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.40 : 0.12),
-                  blurRadius: 24,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(destinations.length, (i) {
-                final selected = i == selectedIndex;
-                final dest = destinations[i];
-                return _GlassNavItem(
-                  icon: selected ? (dest.selectedIcon ?? dest.icon) : dest.icon,
-                  selected: selected,
-                  accent: scheme.primary,
-                  onTap: () => onDestinationSelected(i),
-                );
-              }),
-            ),
+        child: Container(
+          height: 64,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: List.generate(destinations.length, (i) {
+              final selected = i == selectedIndex;
+              final dest = destinations[i];
+              return _GlassNavItem(
+                icon: selected ? (dest.selectedIcon ?? dest.icon) : dest.icon,
+                selected: selected,
+                accent: scheme.primary,
+                onTap: () => onDestinationSelected(i),
+              );
+            }),
           ),
         ),
       ),
@@ -151,53 +131,34 @@ class GlassNavRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 20, 8, 20),
-      child: ClipRRect(
+      child: LiquidGlassContainer(
         borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 28, sigmaY: 28),
-          child: Container(
-            width: extended ? 200 : 80,
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-             color: (isDark ? const Color(0xFF1E1E22) : Colors.white).withValues(alpha: isDark ? 0.55 : 0.55),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: isDark ? 0.10 : 0.65),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.40 : 0.10),
-                  blurRadius: 30,
-                  offset: const Offset(0, 12),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (leading != null) leading!,
-                ...List.generate(destinations.length, (i) {
-                  final selected = i == selectedIndex;
-                  final dest = destinations[i];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: _GlassRailItem(
-                      icon: selected ? (dest.selectedIcon ?? dest.icon) : dest.icon,
-                      label: dest.label,
-                      selected: selected,
-                      extended: extended,
-                      accent: scheme.primary,
-                      onTap: () => onDestinationSelected(i),
-                    ),
-                  );
-                }),
-              ],
-            ),
+        child: Container(
+          width: extended ? 200 : 80,
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (leading != null) leading!,
+              ...List.generate(destinations.length, (i) {
+                final selected = i == selectedIndex;
+                final dest = destinations[i];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: _GlassRailItem(
+                    icon: selected ? (dest.selectedIcon ?? dest.icon) : dest.icon,
+                    label: dest.label,
+                    selected: selected,
+                    extended: extended,
+                    accent: scheme.primary,
+                    onTap: () => onDestinationSelected(i),
+                  ),
+                );
+              }),
+            ],
           ),
         ),
       ),

@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:localsend_app/widget/liquid_glass.dart';
 
 /// A frosted-glass pill segmented control matching [GlassNavRail] /
 /// [GlassBottomNav]'s visual language. The selected segment is shown with
@@ -20,31 +19,14 @@ class GlassSegmentedControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = Theme.of(context).textTheme.bodyMedium?.color;
 
-    return ClipRRect(
+    return LiquidGlassContainer(
       borderRadius: BorderRadius.circular(24),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
+      blurSigma: 20,
+      child: Container(
           height: 48,
           padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-              color: (isDark ? const Color(0xFF1E1E22) : Colors.white).withValues(alpha: isDark ? 0.55 : 0.55),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: isDark ? 0.10 : 0.65),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.35 : 0.08),
-                blurRadius: 18,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
           child: LayoutBuilder(
             builder: (context, constraints) {
               final segmentWidth = constraints.maxWidth / labels.length;
@@ -98,7 +80,6 @@ class GlassSegmentedControl extends StatelessWidget {
               );
             },
           ),
-        ),
       ),
     );
   }
