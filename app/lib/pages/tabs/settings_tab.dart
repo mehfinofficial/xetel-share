@@ -27,6 +27,7 @@ import 'package:localsend_app/widget/dialogs/quick_save_notice.dart';
 import 'package:localsend_app/widget/dialogs/text_field_tv.dart';
 import 'package:localsend_app/widget/dialogs/text_field_with_actions.dart';
 import 'package:localsend_app/widget/labeled_checkbox.dart';
+import 'package:localsend_app/widget/liquid_glass.dart';
 import 'package:localsend_app/widget/local_send_logo.dart';
 import 'package:localsend_app/widget/responsive_list_view.dart';
 import 'package:localsend_isolates/constants.dart';
@@ -233,7 +234,10 @@ class SettingsTab extends StatelessWidget {
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
-                        child: Text(vm.settings.destination ?? t.settingsTab.receive.downloads, style: Theme.of(context).textTheme.titleMedium),
+                        child: Text(
+                          vm.settings.destination ?? t.settingsTab.receive.downloads,
+                          style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w600),
+                        ),
                       ),
                     ),
                   ),
@@ -598,11 +602,14 @@ class _SettingsEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
           Expanded(
-            child: Text(label),
+            child: Text(
+              label,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+            ),
           ),
           const SizedBox(width: 10),
           SizedBox(
@@ -629,32 +636,20 @@ class _BooleanEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     return _SettingsEntry(
       label: label,
-      child: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 50,
-            decoration: BoxDecoration(
-              color: theme.inputDecorationTheme.fillColor,
-              borderRadius: theme.inputDecorationTheme.borderRadius,
-            ),
-          ),
-          Positioned.fill(
-            child: Center(
-              child: Switch(
-                value: value,
-                onChanged: onChanged,
-                activeTrackColor: theme.colorScheme.primary,
-                activeThumbColor: theme.colorScheme.onPrimary,
-                inactiveThumbColor: theme.colorScheme.outline,
-                inactiveTrackColor: theme.colorScheme.surface,
-              ),
-            ),
-          ),
-        ],
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Switch(
+          value: value,
+          onChanged: onChanged,
+          activeTrackColor: scheme.primary,
+          activeThumbColor: scheme.onPrimary,
+          inactiveThumbColor: scheme.outline,
+          inactiveTrackColor: scheme.surfaceContainerHighest,
+          trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
+        ),
       ),
     );
   }
@@ -674,21 +669,36 @@ class _ButtonEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _SettingsEntry(
-      label: label,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: Theme.of(context).inputDecorationTheme.fillColor,
-          shape: RoundedRectangleBorder(borderRadius: Theme.of(context).inputDecorationTheme.borderRadius),
-          foregroundColor: Theme.of(context).colorScheme.onSurface,
-        ),
-        onPressed: onTap,
+    final textColor = Theme.of(context).textTheme.bodyMedium?.color;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Text(
-            buttonLabel,
-            style: Theme.of(context).textTheme.titleMedium,
-            textAlign: TextAlign.center,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  label,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+                ),
+              ),
+              const SizedBox(width: 10),
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 160),
+                child: Text(
+                  buttonLabel,
+                  style: TextStyle(color: textColor?.withValues(alpha: 0.55)),
+                  textAlign: TextAlign.right,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right, size: 20, color: textColor?.withValues(alpha: 0.35)),
+            ],
           ),
         ),
       ),
@@ -704,25 +714,50 @@ class _SettingsSection extends StatelessWidget {
   const _SettingsSection({
     required this.title,
     required this.children,
-    this.padding = const EdgeInsets.only(bottom: 15),
+    this.padding = const EdgeInsets.only(bottom: 24),
   });
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: padding,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: Theme.of(context).textTheme.titleMedium),
-              const SizedBox(height: 10),
-              ...children,
-            ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 6, bottom: 10),
+            child: Text(
+              title.toUpperCase(),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: scheme.onSurface.withValues(alpha: 0.55),
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.8,
+                  ),
+            ),
           ),
-        ),
+          LiquidGlassContainer(
+            borderRadius: BorderRadius.circular(20),
+            blurSigma: 22,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (var i = 0; i < children.length; i++) ...[
+                    // Skip the divider when either neighbor is an AnimatedCrossFade —
+                    // those are collapsible warning banners that render at zero
+                    // height when hidden, so a divider next to one shows up as a
+                    // stray line with nothing visible on the other side of it.
+                    if (i > 0 && children[i] is! AnimatedCrossFade && children[i - 1] is! AnimatedCrossFade)
+                      Divider(height: 1, color: scheme.onSurface.withValues(alpha: 0.08)),
+                    children[i],
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
