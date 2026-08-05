@@ -6,8 +6,7 @@ import 'package:localsend_app/config/theme.dart';
 import 'package:localsend_app/gen/strings.g.dart';
 import 'package:localsend_app/model/persistence/color_mode.dart';
 import 'package:localsend_app/pages/about/about_page.dart';
-import 'package:localsend_app/pages/changelog_page.dart';
-import 'package:localsend_app/pages/donation/donation_page.dart';
+import 'package:localsend_app/pages/about/privacy_policy_page.dart';
 import 'package:localsend_app/pages/language_page.dart';
 import 'package:localsend_app/pages/settings/network_interfaces_page.dart';
 import 'package:localsend_app/pages/tabs/settings_tab_controller.dart';
@@ -507,26 +506,16 @@ class SettingsTab extends StatelessWidget {
               children: [
                 _ButtonEntry(
                   label: t.aboutPage.title,
-                  buttonLabel: t.general.open,
+                  buttonLabel: '',
                   onTap: () async {
                     await context.push(() => const AboutPage());
                   },
                 ),
                 _ButtonEntry(
-                  label: t.settingsTab.other.support,
-                  buttonLabel: t.settingsTab.other.donate,
-                  onTap: () async {
-                    await context.push(() => const DonationPage());
-                  },
-                ),
-                _ButtonEntry(
                   label: t.settingsTab.other.privacyPolicy,
-                  buttonLabel: t.general.open,
+                  buttonLabel: '',
                   onTap: () async {
-                    await launchUrl(
-                      Uri.parse('https://localsend.org/privacy'),
-                      mode: LaunchMode.externalApplication,
-                    );
+                    await context.push(() => const PrivacyPolicyPage());
                   },
                 ),
                 if (checkPlatform([TargetPlatform.iOS, TargetPlatform.macOS]))
@@ -570,20 +559,8 @@ class SettingsTab extends StatelessWidget {
                   orElse: () => Container(),
                 ),
             Text(
-              '© ${DateTime.now().year} Tien Do Nam',
+              '© ${DateTime.now().year} Xetel Inc',
               textAlign: TextAlign.center,
-            ),
-            Center(
-              child: TextButton.icon(
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.onSurface,
-                ),
-                onPressed: () async {
-                  await context.push(() => const ChangelogPage());
-                },
-                icon: const Icon(Icons.history),
-                label: Text(t.changelogPage.title),
-              ),
             ),
             const SizedBox(height: 80),
           ],
