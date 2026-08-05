@@ -42,7 +42,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
   @override
   String get locale => 'Deutsch';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Xetel Share';
   @override
   late final _Translations$general$de general = _Translations$general$de._(_root);
   @override

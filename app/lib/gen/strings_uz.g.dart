@@ -42,7 +42,7 @@ class TranslationsUz extends Translations with BaseTranslations<AppLocale, Trans
   @override
   String get locale => 'Oʻzbekcha';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Xetel Share';
   @override
   late final _Translations$general$uz general = _Translations$general$uz._(_root);
   @override

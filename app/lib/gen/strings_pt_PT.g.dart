@@ -42,7 +42,7 @@ class TranslationsPtPt extends Translations with BaseTranslations<AppLocale, Tra
   @override
   String get locale => 'Português (Portugal)';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Xetel Share';
   @override
   late final Translations$general$pt_PT general = Translations$general$pt_PT.internal(_root);
   @override

@@ -42,7 +42,7 @@ class TranslationsSk extends Translations with BaseTranslations<AppLocale, Trans
   @override
   String get locale => 'Slovenčina';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Xetel Share';
   @override
   late final _Translations$general$sk general = _Translations$general$sk._(_root);
   @override

@@ -42,7 +42,7 @@ class TranslationsKo extends Translations with BaseTranslations<AppLocale, Trans
   @override
   String get locale => '한국어';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Xetel Share';
   @override
   late final _Translations$general$ko general = _Translations$general$ko._(_root);
   @override

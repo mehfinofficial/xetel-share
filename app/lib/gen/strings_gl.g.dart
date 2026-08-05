@@ -42,7 +42,7 @@ class TranslationsGl extends Translations with BaseTranslations<AppLocale, Trans
   @override
   String get locale => 'Galego';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Xetel Share';
   @override
   late final _Translations$general$gl general = _Translations$general$gl._(_root);
   @override

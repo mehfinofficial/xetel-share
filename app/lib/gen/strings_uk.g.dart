@@ -42,7 +42,7 @@ class TranslationsUk extends Translations with BaseTranslations<AppLocale, Trans
   @override
   String get locale => 'Українська';
   @override
-  String get appName => 'LocalSend';
+  String get appName => 'Xetel Share';
   @override
   late final _Translations$general$uk general = _Translations$general$uk._(_root);
   @override
