@@ -21,6 +21,7 @@ import 'package:localsend_app/widget/custom_icon_button.dart';
 import 'package:localsend_app/widget/dialogs/add_file_dialog.dart';
 import 'package:localsend_app/widget/dialogs/send_mode_help_dialog.dart';
 import 'package:localsend_app/widget/file_thumbnail.dart';
+import 'package:localsend_app/widget/liquid_glass.dart';
 import 'package:localsend_app/widget/list_tile/device_list_tile.dart';
 import 'package:localsend_app/widget/list_tile/device_placeholder_list_tile.dart';
 import 'package:localsend_app/widget/opacity_slideshow.dart';
@@ -57,10 +58,15 @@ class SendTab extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding),
                 child: Text(
-                  t.sendTab.selection.title,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  t.sendTab.selection.title.toUpperCase(),
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    letterSpacing: 0.8,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
+              const SizedBox(height: 4),
               ResponsiveWrapView(
                 outerHorizontalPadding: 15,
                 outerVerticalPadding: 10,
@@ -81,122 +87,170 @@ class SendTab extends StatelessWidget {
                 }).toList(),
               ),
             ] else ...[
-              Card(
-                margin: const EdgeInsets.only(bottom: 10, left: _horizontalPadding, right: _horizontalPadding),
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(start: 15, top: 5, bottom: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            t.sendTab.selection.title,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          const Spacer(),
-                          CustomIconButton(
-                            onPressed: () => ref.redux(selectedSendingFilesProvider).dispatch(ClearSelectionAction()),
-                            child: Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
-                          ),
-                          const SizedBox(width: 5),
-                        ],
-                      ),
-                      const SizedBox(height: 5),
-                      Text(t.sendTab.selection.files(files: vm.selectedFiles.length)),
-                      Text(t.sendTab.selection.size(size: vm.selectedFiles.fold(0, (prev, curr) => prev + curr.size).asReadableFileSize)),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: defaultThumbnailSize,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: vm.selectedFiles.length,
-                          itemBuilder: (context, index) {
-                            final file = vm.selectedFiles[index];
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 10),
-                              child: SmartFileThumbnail.fromCrossFile(file),
-                            );
-                          },
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10, left: _horizontalPadding, right: _horizontalPadding),
+                child: LiquidGlassContainer(
+                  borderRadius: BorderRadius.circular(18),
+                  blurSigma: 16,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 14, 10, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Theme.of(context).colorScheme.primary,
+                                    Color.lerp(Theme.of(context).colorScheme.primary, Colors.black, 0.15)!,
+                                  ],
+                                ),
+                              ),
+                              child: Icon(Icons.folder_copy_rounded, size: 18, color: Theme.of(context).colorScheme.onPrimary),
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              t.sendTab.selection.title,
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                            ),
+                            const Spacer(),
+                            CustomIconButton(
+                              onPressed: () => ref.redux(selectedSendingFilesProvider).dispatch(ClearSelectionAction()),
+                              child: Icon(Icons.close, color: Theme.of(context).colorScheme.secondary),
+                            ),
+                            const SizedBox(width: 5),
+                          ],
                         ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              foregroundColor: Theme.of(context).colorScheme.onSurface,
+                        const SizedBox(height: 10),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 8,
+                          children: [
+                            _StatPill(
+                              icon: Icons.description_outlined,
+                              label: t.sendTab.selection.files(files: vm.selectedFiles.length),
                             ),
-                            onPressed: () async {
-                              await context.push(() => const SelectedFilesPage());
-                            },
-                            child: Text(t.general.edit),
-                          ),
-                          const SizedBox(width: 15),
-                          ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).colorScheme.primary,
-                              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            _StatPill(
+                              icon: Icons.sd_storage_outlined,
+                              label: vm.selectedFiles.fold(0, (prev, curr) => prev + curr.size).asReadableFileSize,
                             ),
-                            onPressed: () async {
-                              if (_options.length == 1) {
-                                // open directly
-                                await ref.global.dispatchAsync(
-                                  PickFileAction(
-                                    option: _options.first,
-                                    context: context,
-                                  ),
-                                );
-                                return;
-                              }
-                              await AddFileDialog.open(
-                                context: context,
-                                options: _options,
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          height: defaultThumbnailSize,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: vm.selectedFiles.length,
+                            itemBuilder: (context, index) {
+                              final file = vm.selectedFiles[index];
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: SmartFileThumbnail.fromCrossFile(file),
                               );
                             },
-                            icon: const Icon(Icons.add),
-                            label: Text(t.general.add),
                           ),
-                          const SizedBox(width: 15),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: 14),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                foregroundColor: Theme.of(context).colorScheme.onSurface,
+                              ),
+                              onPressed: () async {
+                                await context.push(() => const SelectedFilesPage());
+                              },
+                              child: Text(t.general.edit),
+                            ),
+                            const SizedBox(width: 10),
+                            FilledButton.icon(
+                              style: FilledButton.styleFrom(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                              ),
+                              onPressed: () async {
+                                if (_options.length == 1) {
+                                  // open directly
+                                  await ref.global.dispatchAsync(
+                                    PickFileAction(
+                                      option: _options.first,
+                                      context: context,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                await AddFileDialog.open(
+                                  context: context,
+                                  options: _options,
+                                );
+                              },
+                              icon: const Icon(Icons.add, size: 18),
+                              label: Text(t.general.add),
+                            ),
+                            const SizedBox(width: 5),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ],
-            Row(
-              children: [
-                const SizedBox(width: _horizontalPadding),
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Text(t.sendTab.nearbyDevices, style: Theme.of(context).textTheme.titleMedium),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: _horizontalPadding, vertical: 10),
+              child: Row(
+                children: [
+                  Flexible(
+                    child: Text(
+                      t.sendTab.nearbyDevices.toUpperCase(),
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        letterSpacing: 0.8,
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
                   ),
-                ),
-                const SizedBox(width: 10),
-                _ScanButton(
-                  ips: vm.localIps,
-                ),
-                Tooltip(
-                  message: t.sendTab.manualSending,
-                  child: CustomIconButton(
-                    onPressed: () async => vm.onTapAddress(context),
-                    child: const Icon(Icons.ads_click),
+                  const SizedBox(width: 10),
+                  LiquidGlassContainer(
+                    borderRadius: BorderRadius.circular(999),
+                    blurSigma: 14,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _ScanButton(
+                          ips: vm.localIps,
+                        ),
+                        Tooltip(
+                          message: t.sendTab.manualSending,
+                          child: CustomIconButton(
+                            onPressed: () async => vm.onTapAddress(context),
+                            child: const Icon(Icons.ads_click),
+                          ),
+                        ),
+                        Tooltip(
+                          message: t.dialogs.favoriteDialog.title,
+                          child: CustomIconButton(
+                            onPressed: () async => await vm.onTapFavorite(context),
+                            child: const Icon(Icons.favorite),
+                          ),
+                        ),
+                        _SendModeButton(
+                          onSelect: (mode) async => vm.onTapSendMode(context, mode),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Tooltip(
-                  message: t.dialogs.favoriteDialog.title,
-                  child: CustomIconButton(
-                    onPressed: () async => await vm.onTapFavorite(context),
-                    child: const Icon(Icons.favorite),
-                  ),
-                ),
-                _SendModeButton(
-                  onSelect: (mode) async => vm.onTapSendMode(context, mode),
-                ),
-              ],
+                ],
+              ),
             ),
             if (vm.nearbyDevices.isEmpty)
               const Padding(
@@ -268,6 +322,42 @@ class SendTab extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+/// Small rounded stat badge (e.g. "3 files", "24.5 MB") used in the
+/// selected-files summary card.
+class _StatPill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _StatPill({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(999),
+        color: isDark ? Colors.white.withValues(alpha: 0.06) : colorScheme.primary.withValues(alpha: 0.07),
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.08) : colorScheme.primary.withValues(alpha: 0.12),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 13, color: colorScheme.primary),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: colorScheme.onSurfaceVariant),
+          ),
+        ],
+      ),
     );
   }
 }
