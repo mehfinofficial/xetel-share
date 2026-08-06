@@ -20,6 +20,9 @@ import 'package:localsend_app/widget/custom_progress_bar.dart';
 import 'package:localsend_app/widget/dialogs/cancel_session_dialog.dart';
 import 'package:localsend_app/widget/dialogs/error_dialog.dart';
 import 'package:localsend_app/widget/file_thumbnail.dart';
+import 'package:localsend_app/widget/liquid_glass.dart';
+import 'package:localsend_app/widget/liquid_progress_ring.dart';
+import 'package:localsend_app/widget/shimmer_progress_bar.dart';
 import 'package:localsend_isolates/model/dto/file_dto.dart';
 import 'package:localsend_isolates/model/file_status.dart';
 import 'package:localsend_isolates/model/session_status.dart';
@@ -261,20 +264,42 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
               itemCount: _files.length + 2,
               itemBuilder: (context, index) {
                 if (index == 0) {
-                  // title
+                  // hero: overall progress ring + title
                   if (widget.showAppBar) {
                     return Container();
                   }
 
+                  final overallProgress = _totalBytes == 0 ? 0.0 : currBytes / _totalBytes;
+
                   return Padding(
-                    padding: const EdgeInsets.only(bottom: 5),
+                    padding: const EdgeInsets.only(bottom: 20),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(title, style: Theme.of(context).textTheme.titleLarge),
+                        LiquidProgressRing(
+                          value: status == SessionStatus.finished ? 1 : overallProgress,
+                          size: 128,
+                          strokeWidth: 10,
+                          color: status == SessionStatus.finishedWithErrors ? Theme.of(context).colorScheme.warning : null,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '${(overallProgress * 100).clamp(0, 100).round()}%',
+                                style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
+                              ),
+                              Text(
+                                t.progressPage.total.count(curr: finishedCount, n: _selectedFiles.length),
+                                style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Text(title, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
                         if (checkPlatformWithFileSystem() && receiveSession != null)
                           Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.only(top: 6),
                             child: Text.rich(
                               TextSpan(
                                 children: [
@@ -296,6 +321,7 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
                                   ),
                                 ],
                               ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                       ],
@@ -347,9 +373,19 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
                   asset = null;
                 }
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5),
+                final isActive = fileStatus == FileStatus.sending;
+
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  margin: const EdgeInsets.symmetric(vertical: 4),
+                  padding: isActive ? const EdgeInsets.all(10) : EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    color: isActive ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.08) : Colors.transparent,
+                    border: isActive ? Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)) : null,
+                  ),
                   child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
                     splashColor: Colors.transparent,
                     splashFactory: NoSplash.splashFactory,
                     highlightColor: Colors.transparent,
@@ -384,16 +420,16 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
                                 ],
                               ),
                               const SizedBox(height: 5),
-                              if (fileStatus == FileStatus.sending)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 5),
-                                  child: CustomProgressBar(
-                                    progress: progressNotifier.getProgress(sessionId: widget.sessionId, fileId: file.id),
-                                  ),
-                                )
-                              else
-                                Row(
-                                  children: [
+                              Row(
+                                children: [
+                                  Icon(fileStatus.statusIcon, color: fileStatus.getColor(context), size: 14),
+                                  const SizedBox(width: 4),
+                                  if (fileStatus == FileStatus.sending)
+                                    Text(
+                                      '${(progressNotifier.getProgress(sessionId: widget.sessionId, fileId: file.id) * 100).clamp(0, 100).round()}%',
+                                      style: TextStyle(color: fileStatus.getColor(context), fontWeight: FontWeight.w700, height: 1),
+                                    )
+                                  else
                                     Flexible(
                                       child: Text(
                                         savedToGallery ? t.progressPage.savedToGallery : fileStatus.label,
@@ -444,9 +480,11 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
                 alignment: Alignment.bottomCenter,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: Card(
+                  child: LiquidGlassContainer(
+                    borderRadius: BorderRadius.circular(20),
+                    blurSigma: 24,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15, bottom: 5, top: 10),
+                      padding: const EdgeInsets.fromLTRB(18, 14, 18, 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
@@ -455,45 +493,54 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
                             status.getLabel(
                               remainingTime: _remainingTime ?? '-',
                             ),
-                            style: const TextStyle(fontSize: 20),
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                           ),
-                          const SizedBox(height: 5),
-                          TweenAnimationBuilder(
-                            tween: Tween<double>(begin: 0, end: _totalBytes == 0 ? 0 : currBytes / _totalBytes),
-                            duration: const Duration(milliseconds: 200),
-                            curve: Curves.easeOut,
-                            builder: (context, value, child) {
-                              return CustomProgressBar(
-                                progress: value,
-                                borderRadius: 5,
-                              );
-                            },
-                          ),
+                          const SizedBox(height: 8),
+                          status == SessionStatus.sending
+                              ? ShimmerProgressBar(
+                                  progress: _totalBytes == 0 ? 0 : currBytes / _totalBytes,
+                                  borderRadius: 5,
+                                )
+                              : TweenAnimationBuilder(
+                                  tween: Tween<double>(begin: 0, end: _totalBytes == 0 ? 0 : currBytes / _totalBytes),
+                                  duration: const Duration(milliseconds: 200),
+                                  curve: Curves.easeOut,
+                                  builder: (context, value, child) {
+                                    return CustomProgressBar(
+                                      progress: value,
+                                      borderRadius: 5,
+                                    );
+                                  },
+                                ),
                           AnimatedCrossFade(
                             crossFadeState: _advanced ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                             duration: const Duration(milliseconds: 200),
                             alignment: Alignment.topLeft,
                             firstChild: Container(),
                             secondChild: Padding(
-                              padding: const EdgeInsets.only(top: 10, bottom: 5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              padding: const EdgeInsets.only(top: 12, bottom: 6),
+                              child: Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
                                 children: [
-                                  Text(
-                                    t.progressPage.total.count(
+                                  _StatPill(
+                                    icon: Icons.folder_copy_outlined,
+                                    label: t.progressPage.total.count(
                                       curr: finishedCount,
                                       n: _selectedFiles.length,
                                     ),
                                   ),
-                                  Text(
-                                    t.progressPage.total.size(
+                                  _StatPill(
+                                    icon: Icons.sd_storage_outlined,
+                                    label: t.progressPage.total.size(
                                       curr: currBytes.asReadableFileSize,
                                       n: _totalBytes == double.maxFinite.toInt() ? '-' : _totalBytes.asReadableFileSize,
                                     ),
                                   ),
                                   if (speedInBytes != null)
-                                    Text(
-                                      t.progressPage.total.speed(
+                                    _StatPill(
+                                      icon: Icons.speed_outlined,
+                                      label: t.progressPage.total.speed(
                                         speed: speedInBytes.asReadableFileSize,
                                       ),
                                     ),
@@ -513,8 +560,7 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
                                 icon: const Icon(Icons.info),
                                 label: Text(_advanced ? t.general.hide : t.general.advanced),
                               ),
-                              TextButton.icon(
-                                style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.onSurface),
+                              FilledButton.icon(
                                 onPressed: () => _exit(closeSession: true),
                                 icon: Icon(status == SessionStatus.sending ? Icons.close : Icons.check_circle),
                                 label: Text(
@@ -536,6 +582,35 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// A small glass-ish pill used for the "Advanced" stats (file count, total
+/// size, speed) in the bottom sticky card of [ProgressPage].
+class _StatPill extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _StatPill({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: colorScheme.secondaryContainer.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: colorScheme.onSecondaryContainer),
+          const SizedBox(width: 5),
+          Text(label, style: TextStyle(fontSize: 12, color: colorScheme.onSecondaryContainer)),
+        ],
       ),
     );
   }
@@ -569,6 +644,21 @@ extension on FileStatus {
         return Theme.of(context).colorScheme.warning;
       case FileStatus.finished:
         return Theme.of(context).colorScheme.primary;
+    }
+  }
+
+  IconData get statusIcon {
+    switch (this) {
+      case FileStatus.queue:
+        return Icons.schedule;
+      case FileStatus.skipped:
+        return Icons.remove_circle_outline;
+      case FileStatus.sending:
+        return Icons.upload;
+      case FileStatus.failed:
+        return Icons.error_outline;
+      case FileStatus.finished:
+        return Icons.check_circle;
     }
   }
 }
