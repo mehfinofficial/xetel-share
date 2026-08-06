@@ -271,12 +271,18 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
 
                   final overallProgress = _totalBytes == 0 ? 0.0 : currBytes / _totalBytes;
 
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        LiquidProgressRing(
+                  return Transform.translate(
+                    // The ListView uses asymmetric horizontal padding (left: 15, right: 30)
+                    // so the file rows have room for their trailing icon. That same padding
+                    // also pulls this centered hero block 7.5px left of true screen-center,
+                    // so nudge it back.
+                    offset: const Offset(7.5, 0),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          LiquidProgressRing(
                           value: status == SessionStatus.finished ? 1 : overallProgress,
                           size: 128,
                           strokeWidth: 10,
@@ -324,7 +330,8 @@ class _ProgressPageState extends State<ProgressPage> with Refena {
                               textAlign: TextAlign.center,
                             ),
                           ),
-                      ],
+                        ],
+                      ),
                     ),
                   );
                 }

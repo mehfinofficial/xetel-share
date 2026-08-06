@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:localsend_isolates/constants.dart';
@@ -675,9 +676,24 @@ Future<void> _handleFileUpload({
       );
     }
   } catch (e, st) {
-    // The incomplete file is kept: a retry of this file overwrites it, and
-    // otherwise it stays behind as the partial file of a failed transfer.
     _logger.severe('Failed to save file', e, st);
+
+    // Remove the partially written file instead of leaving it behind: a retry
+    // reopens (and truncates) the same path anyway via [reopenFileSaveTarget],
+    // so nothing is lost, and a transfer the user does not retry no longer
+    // leaves a half-downloaded file in the destination directory.
+    final path = target.path;
+    if (path != null) {
+      try {
+        final partialFile = File(path);
+        if (await partialFile.exists()) {
+          await partialFile.delete();
+        }
+      } catch (deleteError) {
+        _logger.warning('Could not delete partial file at $path', deleteError);
+      }
+    }
+
     emitFailed(e);
     return;
   }
