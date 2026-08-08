@@ -16,6 +16,7 @@ import 'package:localsend_app/util/native/platform_check.dart';
 import 'package:localsend_app/util/native/taskbar_helper.dart';
 import 'package:localsend_app/util/ui/snackbar.dart';
 import 'package:localsend_app/widget/device_bage.dart';
+import 'package:localsend_app/widget/liquid_glass.dart';
 import 'package:localsend_app/widget/responsive_list_view.dart';
 import 'package:localsend_isolates/model/device.dart';
 import 'package:localsend_isolates/model/dto/file_dto.dart';
@@ -117,8 +118,8 @@ class _ReceivePageState extends State<ReceivePage> with Refena {
                                 children: [
                                   if (vm.showSenderInfo && !smallUi)
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 10),
-                                      child: Icon(vm.sender.deviceType.icon, size: 64),
+                                      padding: const EdgeInsets.only(bottom: 16),
+                                      child: _SenderAvatar(icon: vm.sender.deviceType.icon),
                                     ),
                                   Builder(
                                     builder: (context) {
@@ -129,18 +130,19 @@ class _ReceivePageState extends State<ReceivePage> with Refena {
                                       return FittedBox(
                                         child: Text(
                                           alias,
-                                          style: TextStyle(fontSize: smallUi ? 32 : 48),
+                                          style: TextStyle(fontSize: smallUi ? 32 : 48, fontWeight: FontWeight.w700),
                                           textAlign: TextAlign.center,
                                         ),
                                       );
                                     },
                                   ),
                                   if (vm.showSenderInfo) ...[
-                                    const SizedBox(height: 10),
+                                    const SizedBox(height: 12),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         InkWell(
+                                          borderRadius: BorderRadius.circular(20),
                                           onTap: () {
                                             setState(() {
                                               _showFullIp = !_showFullIp;
@@ -171,7 +173,9 @@ class _ReceivePageState extends State<ReceivePage> with Refena {
                                     vm.message != null
                                         ? (vm.isLink ? t.receivePage.subTitleLink : t.receivePage.subTitleMessage)
                                         : t.receivePage.subTitle(n: vm.files.length),
-                                    style: smallUi ? null : Theme.of(context).textTheme.titleLarge,
+                                    style: smallUi
+                                        ? null
+                                        : Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
                                     textAlign: TextAlign.center,
                                   ),
                                   if (vm.message != null)
@@ -182,10 +186,12 @@ class _ReceivePageState extends State<ReceivePage> with Refena {
                                           padding: const EdgeInsets.only(top: 20),
                                           child: SizedBox(
                                             height: 100,
-                                            child: Card(
+                                            child: LiquidGlassContainer(
+                                              borderRadius: BorderRadius.circular(16),
+                                              blurSigma: 18,
                                               child: SingleChildScrollView(
                                                 child: Padding(
-                                                  padding: const EdgeInsets.all(10),
+                                                  padding: const EdgeInsets.all(14),
                                                   child: SelectableText(
                                                     vm.message!,
                                                   ),
@@ -194,12 +200,15 @@ class _ReceivePageState extends State<ReceivePage> with Refena {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(height: 10),
+                                        const SizedBox(height: 14),
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            ElevatedButton(
-                                              onPressed: () {
+                                            _PillButton(
+                                              icon: Icons.copy_rounded,
+                                              label: t.general.copy,
+                                              filled: !vm.isLink,
+                                              onTap: () {
                                                 unawaited(
                                                   Clipboard.setData(ClipboardData(text: vm.message!)),
                                                 );
@@ -209,25 +218,21 @@ class _ReceivePageState extends State<ReceivePage> with Refena {
                                                 vm.onAccept();
                                                 context.pop();
                                               },
-                                              child: Text(t.general.copy),
                                             ),
-                                            if (vm.isLink)
-                                              Padding(
-                                                padding: const EdgeInsetsDirectional.only(start: 20),
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: Theme.of(context).colorScheme.primary,
-                                                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                                                  ),
-                                                  onPressed: () {
-                                                    // ignore: discarded_futures
-                                                    launchUrl(Uri.parse(vm.message!), mode: LaunchMode.externalApplication);
-                                                    vm.onAccept();
-                                                    context.pop();
-                                                  },
-                                                  child: Text(t.general.open),
-                                                ),
+                                            if (vm.isLink) ...[
+                                              const SizedBox(width: 14),
+                                              _PillButton(
+                                                icon: Icons.open_in_new_rounded,
+                                                label: t.general.open,
+                                                filled: true,
+                                                onTap: () {
+                                                  // ignore: discarded_futures
+                                                  launchUrl(Uri.parse(vm.message!), mode: LaunchMode.externalApplication);
+                                                  vm.onAccept();
+                                                  context.pop();
+                                                },
                                               ),
+                                            ],
                                           ],
                                         ),
                                       ],
@@ -251,6 +256,132 @@ class _ReceivePageState extends State<ReceivePage> with Refena {
   }
 }
 
+/// Circular "liquid glass" avatar surface behind the sender's device-type
+/// icon. Same depth/gradient/sheen language as [LiquidGlassContainer]
+/// elsewhere (progress ring backdrop, glass nav, settings panels), just
+/// applied to a circle instead of a rounded rect.
+class _SenderAvatar extends StatelessWidget {
+  final IconData icon;
+
+  const _SenderAvatar({required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 96,
+      height: 96,
+      child: LiquidGlassContainer(
+        borderRadius: BorderRadius.circular(48),
+        blurSigma: 18,
+        child: Center(
+          child: Icon(icon, size: 44, color: Theme.of(context).colorScheme.onSurface),
+        ),
+      ),
+    );
+  }
+}
+
+/// Horizontal icon+label pill button, matching the two visual treatments
+/// used by [BigButton] elsewhere: a gradient-filled primary surface, or a
+/// liquid glass secondary surface. Same interaction/callback shape as the
+/// original [ElevatedButton.icon]s -- restyle only, no new behavior.
+class _PillButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool filled;
+  final VoidCallback? onTap;
+  final Color? accentColor;
+
+  const _PillButton({
+    required this.icon,
+    required this.label,
+    required this.filled,
+    required this.onTap,
+    this.accentColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final borderRadius = BorderRadius.circular(18);
+    final disabled = onTap == null;
+    final base = accentColor ?? colorScheme.primary;
+    final fg = filled ? colorScheme.onPrimary : (accentColor != null ? base : colorScheme.onSurface);
+
+    final content = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 16),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 20, color: disabled ? fg.withValues(alpha: 0.4) : fg),
+          const SizedBox(width: 10),
+          Text(
+            label,
+            style: TextStyle(
+              color: disabled ? fg.withValues(alpha: 0.4) : fg,
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (!filled) {
+      return Opacity(
+        opacity: disabled ? 0.5 : 1,
+        child: LiquidGlassContainer(
+          borderRadius: borderRadius,
+          blurSigma: 18,
+          child: Material(
+            type: MaterialType.transparency,
+            child: InkWell(
+              borderRadius: borderRadius,
+              onTap: onTap,
+              child: content,
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Opacity(
+      opacity: disabled ? 0.5 : 1,
+      child: Material(
+        type: MaterialType.transparency,
+        child: Ink(
+          decoration: BoxDecoration(
+            borderRadius: borderRadius,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                base,
+                Color.lerp(base, Colors.black, isDark ? 0.15 : 0.08)!,
+              ],
+            ),
+            boxShadow: disabled
+                ? null
+                : [
+                    BoxShadow(
+                      color: base.withValues(alpha: isDark ? 0.28 : 0.22),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+          ),
+          child: InkWell(
+            borderRadius: borderRadius,
+            onTap: onTap,
+            child: content,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _Actions extends StatelessWidget {
   final ReceivePageVm vm;
 
@@ -263,16 +394,14 @@ class _Actions extends StatelessWidget {
 
     if (vm.message != null) {
       return Center(
-        child: TextButton.icon(
-          style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).colorScheme.onSurface,
-          ),
-          onPressed: () {
+        child: _PillButton(
+          icon: Icons.close_rounded,
+          label: t.general.close,
+          filled: false,
+          onTap: () {
             vm.onAccept();
             context.pop();
           },
-          icon: const Icon(Icons.close),
-          label: Text(t.general.close),
         ),
       );
     }
@@ -284,64 +413,59 @@ class _Actions extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 20),
             child: Text(
               t.receivePage.canceled,
-              style: TextStyle(color: Theme.of(context).colorScheme.warning),
+              style: TextStyle(color: Theme.of(context).colorScheme.warning, fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
           ),
           Center(
-            child: ElevatedButton.icon(
-              onPressed: () {
+            child: _PillButton(
+              icon: Icons.check_circle_rounded,
+              label: t.general.close,
+              filled: true,
+              onTap: () {
                 vm.onClose();
                 context.pop();
               },
-              icon: const Icon(Icons.check_circle),
-              label: Text(t.general.close),
             ),
           ),
         ],
       );
     }
 
+    final declineColor = colorMode == ColorMode.yaru ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.error;
+
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 20),
-          child: TextButton.icon(
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(context).colorScheme.onSurface,
-            ),
-            onPressed: () async {
+          padding: const EdgeInsets.only(bottom: 16),
+          child: _PillButton(
+            icon: Icons.tune_rounded,
+            label: t.receiveOptionsPage.title,
+            filled: false,
+            onTap: () async {
               await context.push(() => ReceiveOptionsPage(vm));
             },
-            icon: const Icon(Icons.settings),
-            label: Text(t.receiveOptionsPage.title),
           ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                elevation: colorMode == ColorMode.yaru ? 0 : null,
-                backgroundColor: colorMode == ColorMode.yaru ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.error,
-                foregroundColor: colorMode == ColorMode.yaru ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.onError,
-              ),
-              onPressed: () {
+            _PillButton(
+              icon: Icons.close_rounded,
+              label: t.general.decline,
+              filled: colorMode != ColorMode.yaru,
+              accentColor: declineColor,
+              onTap: () {
                 vm.onDecline();
                 context.pop();
               },
-              icon: const Icon(Icons.close),
-              label: Text(t.general.decline),
             ),
-            const SizedBox(width: 20),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              ),
-              onPressed: selectedFiles.isEmpty ? null : () => vm.onAccept(),
-              icon: const Icon(Icons.check_circle),
-              label: Text(t.general.accept),
+            const SizedBox(width: 16),
+            _PillButton(
+              icon: Icons.check_circle_rounded,
+              label: t.general.accept,
+              filled: true,
+              onTap: selectedFiles.isEmpty ? null : () => vm.onAccept(),
             ),
           ],
         ),
