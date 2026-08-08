@@ -117,14 +117,14 @@ abstract class RustLibApi extends BaseApi {
 
   Future<void> crateApiDiscoveryRsDiscoveryAnnounce({required RsDiscovery that});
 
-  Future<RsDiscoveredDevice?> crateApiDiscoveryRsDiscoveryDiscover({
+  Future<RsStoredDevice?> crateApiDiscoveryRsDiscoveryDiscover({
     required RsDiscovery that,
     required String host,
     required int port,
-    required ProtocolTypeV2 protocol,
+    required ProtocolType protocol,
   });
 
-  Stream<RsDiscoveredDevice> crateApiDiscoveryRsDiscoveryListen({required RsDiscovery that});
+  Stream<RsStoredDevice> crateApiDiscoveryRsDiscoveryListen({required RsDiscovery that});
 
   Future<String?> crateApiDiscoveryRsDiscoveryMulticastError({required RsDiscovery that});
 
@@ -132,7 +132,7 @@ abstract class RustLibApi extends BaseApi {
     required RsDiscovery that,
     required String interfaceIp,
     required int port,
-    required ProtocolTypeV2 protocol,
+    required ProtocolType protocol,
   });
 
   Future<void> crateApiDiscoveryRsDiscoverySetAnswerAnnouncements({required RsDiscovery that, required bool answer});
@@ -166,7 +166,7 @@ abstract class RustLibApi extends BaseApi {
     required RegisterDto payload,
   });
 
-  Stream<double> crateApiHttpRsHttpClientUpload({
+  Stream<RsUploadEvent> crateApiHttpRsHttpClientUpload({
     required RsHttpClient that,
     required ProtocolType protocol,
     required String ip,
@@ -286,7 +286,7 @@ abstract class RustLibApi extends BaseApi {
     String? deviceModel,
     DeviceType? deviceType,
     required String fingerprint,
-    required ProtocolTypeV2 protocol,
+    required ProtocolType protocol,
     required bool download,
     required String certPem,
     required String privateKeyPem,
@@ -302,7 +302,8 @@ abstract class RustLibApi extends BaseApi {
     DeviceType? deviceType,
     required String fingerprint,
     String? pin,
-    WebSendParams? webSend,
+    required bool verifyChecksums,
+    WebParams? web,
     String? showToken,
   });
 
@@ -613,11 +614,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   );
 
   @override
-  Future<RsDiscoveredDevice?> crateApiDiscoveryRsDiscoveryDiscover({
+  Future<RsStoredDevice?> crateApiDiscoveryRsDiscoveryDiscover({
     required RsDiscovery that,
     required String host,
     required int port,
-    required ProtocolTypeV2 protocol,
+    required ProtocolType protocol,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -626,11 +627,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRsDiscovery(that, serializer);
           sse_encode_String(host, serializer);
           sse_encode_u_16(port, serializer);
-          sse_encode_protocol_type_v_2(protocol, serializer);
+          sse_encode_protocol_type(protocol, serializer);
           pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 9, port: port_);
         },
         codec: SseCodec(
-          decodeSuccessData: sse_decode_opt_box_autoadd_rs_discovered_device,
+          decodeSuccessData: sse_decode_opt_box_autoadd_rs_stored_device,
           decodeErrorData: null,
         ),
         constMeta: kCrateApiDiscoveryRsDiscoveryDiscoverConstMeta,
@@ -646,15 +647,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   );
 
   @override
-  Stream<RsDiscoveredDevice> crateApiDiscoveryRsDiscoveryListen({required RsDiscovery that}) {
-    final sink = RustStreamSink<RsDiscoveredDevice>();
+  Stream<RsStoredDevice> crateApiDiscoveryRsDiscoveryListen({required RsDiscovery that}) {
+    final sink = RustStreamSink<RsStoredDevice>();
     unawaited(
       handler.executeNormal(
         NormalTask(
           callFfi: (port_) {
             final serializer = SseSerializer(generalizedFrbRustBinding);
             sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRsDiscovery(that, serializer);
-            sse_encode_StreamSink_rs_discovered_device_Sse(sink, serializer);
+            sse_encode_StreamSink_rs_stored_device_Sse(sink, serializer);
             pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 10, port: port_);
           },
           codec: SseCodec(
@@ -705,7 +706,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required RsDiscovery that,
     required String interfaceIp,
     required int port,
-    required ProtocolTypeV2 protocol,
+    required ProtocolType protocol,
   }) {
     return handler.executeNormal(
       NormalTask(
@@ -714,7 +715,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRsDiscovery(that, serializer);
           sse_encode_String(interfaceIp, serializer);
           sse_encode_u_16(port, serializer);
-          sse_encode_protocol_type_v_2(protocol, serializer);
+          sse_encode_protocol_type(protocol, serializer);
           pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 12, port: port_);
         },
         codec: SseCodec(
@@ -896,7 +897,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   );
 
   @override
-  Stream<double> crateApiHttpRsHttpClientUpload({
+  Stream<RsUploadEvent> crateApiHttpRsHttpClientUpload({
     required RsHttpClient that,
     required ProtocolType protocol,
     required String ip,
@@ -911,14 +912,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     required BigInt contentLength,
     required RsCancellationToken cancelToken,
   }) {
-    final sink = RustStreamSink<double>();
+    final sink = RustStreamSink<RsUploadEvent>();
     unawaited(
       handler.executeNormal(
         NormalTask(
           callFfi: (port_) {
             final serializer = SseSerializer(generalizedFrbRustBinding);
             sse_encode_Auto_Ref_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerRsHttpClient(that, serializer);
-            sse_encode_StreamSink_f_64_Sse(sink, serializer);
+            sse_encode_StreamSink_rs_upload_event_Sse(sink, serializer);
             sse_encode_protocol_type(protocol, serializer);
             sse_encode_String(ip, serializer);
             sse_encode_u_16(port, serializer);
@@ -938,7 +939,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
-            decodeErrorData: sse_decode_rs_http_client_error,
+            decodeErrorData: null,
           ),
           constMeta: kCrateApiHttpRsHttpClientUploadConstMeta,
           argValues: [that, sink, protocol, ip, port, publicKey, sessionId, fileId, token, binary, path, fileDescriptor, contentLength, cancelToken],
@@ -1140,7 +1141,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
-            decodeErrorData: sse_decode_AnyhowException,
+            decodeErrorData: null,
           ),
           constMeta: kCrateApiServerRsHttpServerRespondFileUploadConstMeta,
           argValues: [that, sink, sessionId, fileId, path, fileDescriptor, fileSize],
@@ -1884,7 +1885,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           },
           codec: SseCodec(
             decodeSuccessData: sse_decode_unit,
-            decodeErrorData: sse_decode_AnyhowException,
+            decodeErrorData: null,
           ),
           constMeta: kCrateApiCryptoHashFileConstMeta,
           argValues: [sink, path, fileDescriptor, bytes, cancelToken],
@@ -1961,7 +1962,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     String? deviceModel,
     DeviceType? deviceType,
     required String fingerprint,
-    required ProtocolTypeV2 protocol,
+    required ProtocolType protocol,
     required bool download,
     required String certPem,
     required String privateKeyPem,
@@ -1980,7 +1981,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_opt_String(deviceModel, serializer);
           sse_encode_opt_box_autoadd_device_type(deviceType, serializer);
           sse_encode_String(fingerprint, serializer);
-          sse_encode_protocol_type_v_2(protocol, serializer);
+          sse_encode_protocol_type(protocol, serializer);
           sse_encode_bool(download, serializer);
           sse_encode_String(certPem, serializer);
           sse_encode_String(privateKeyPem, serializer);
@@ -2043,7 +2044,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     DeviceType? deviceType,
     required String fingerprint,
     String? pin,
-    WebSendParams? webSend,
+    required bool verifyChecksums,
+    WebParams? web,
     String? showToken,
   }) {
     return handler.executeNormal(
@@ -2058,7 +2060,8 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           sse_encode_opt_box_autoadd_device_type(deviceType, serializer);
           sse_encode_String(fingerprint, serializer);
           sse_encode_opt_String(pin, serializer);
-          sse_encode_opt_box_autoadd_web_send_params(webSend, serializer);
+          sse_encode_bool(verifyChecksums, serializer);
+          sse_encode_opt_box_autoadd_web_params(web, serializer);
           sse_encode_opt_String(showToken, serializer);
           pdeCallFfi(generalizedFrbRustBinding, serializer, funcId: 55, port: port_);
         },
@@ -2067,7 +2070,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
           decodeErrorData: sse_decode_AnyhowException,
         ),
         constMeta: kCrateApiServerStartServerConstMeta,
-        argValues: [port, tls, alias, version, deviceModel, deviceType, fingerprint, pin, webSend, showToken],
+        argValues: [port, tls, alias, version, deviceModel, deviceType, fingerprint, pin, verifyChecksums, web, showToken],
         apiImpl: this,
       ),
     );
@@ -2075,7 +2078,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiServerStartServerConstMeta => const TaskConstMeta(
     debugName: 'start_server',
-    argNames: ['port', 'tls', 'alias', 'version', 'deviceModel', 'deviceType', 'fingerprint', 'pin', 'webSend', 'showToken'],
+    argNames: ['port', 'tls', 'alias', 'version', 'deviceModel', 'deviceType', 'fingerprint', 'pin', 'verifyChecksums', 'web', 'showToken'],
   );
 
   @override
@@ -2458,12 +2461,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<RsDiscoveredDevice> dco_decode_StreamSink_rs_discovered_device_Sse(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    throw UnimplementedError();
-  }
-
-  @protected
   RustStreamSink<RsHashFileEvent> dco_decode_StreamSink_rs_hash_file_event_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     throw UnimplementedError();
@@ -2471,6 +2468,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   RustStreamSink<RsServerEvent> dco_decode_StreamSink_rs_server_event_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
+  RustStreamSink<RsStoredDevice> dco_decode_StreamSink_rs_stored_device_Sse(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    throw UnimplementedError();
+  }
+
+  @protected
+  RustStreamSink<RsUploadEvent> dco_decode_StreamSink_rs_upload_event_Sse(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     throw UnimplementedError();
   }
@@ -2604,6 +2613,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RsHttpClientError dco_decode_box_autoadd_rs_http_client_error(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_rs_http_client_error(raw);
+  }
+
+  @protected
+  RsStoredDevice dco_decode_box_autoadd_rs_stored_device(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_rs_stored_device(raw);
+  }
+
+  @protected
   RTCSendFileResponse dco_decode_box_autoadd_rtc_send_file_response(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dco_decode_rtc_send_file_response(raw);
@@ -2619,6 +2640,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int dco_decode_box_autoadd_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw as int;
+  }
+
+  @protected
+  WebParams dco_decode_box_autoadd_web_params(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return dco_decode_web_params(raw);
   }
 
   @protected
@@ -2778,6 +2805,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<RsDeviceChannel> dco_decode_list_rs_device_channel(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return (raw as List<dynamic>).map(dco_decode_rs_device_channel).toList();
+  }
+
+  @protected
   LsHttpClientVersion dco_decode_ls_http_client_version(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return LsHttpClientVersion.values[raw as int];
@@ -2835,9 +2868,9 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RsDiscoveredDevice? dco_decode_opt_box_autoadd_rs_discovered_device(dynamic raw) {
+  RsStoredDevice? dco_decode_opt_box_autoadd_rs_stored_device(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
-    return raw == null ? null : dco_decode_box_autoadd_rs_discovered_device(raw);
+    return raw == null ? null : dco_decode_box_autoadd_rs_stored_device(raw);
   }
 
   @protected
@@ -2850,6 +2883,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int? dco_decode_opt_box_autoadd_u_32(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return raw == null ? null : dco_decode_box_autoadd_u_32(raw);
+  }
+
+  @protected
+  WebParams? dco_decode_opt_box_autoadd_web_params(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    return raw == null ? null : dco_decode_box_autoadd_web_params(raw);
   }
 
   @protected
@@ -2934,12 +2973,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ProtocolTypeV2 dco_decode_protocol_type_v_2(dynamic raw) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return ProtocolTypeV2.values[raw as int];
-  }
-
-  @protected
   (Dart2RustStreamSink, Dart2RustStreamReceiver)
   dco_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_dart_2_rust_stream_sink_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_dart_2_rust_stream_receiver(
     dynamic raw,
@@ -3010,7 +3043,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       deviceType: dco_decode_opt_box_autoadd_device_type(arr[3]),
       fingerprint: dco_decode_String(arr[4]),
       port: dco_decode_u_16(arr[5]),
-      protocol: dco_decode_protocol_type_v_2(arr[6]),
+      protocol: dco_decode_protocol_type(arr[6]),
       download: dco_decode_bool(arr[7]),
     );
   }
@@ -3042,6 +3075,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RsDeviceChannel dco_decode_rs_device_channel(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return RsDeviceChannel(
+      host: dco_decode_String(arr[0]),
+      port: dco_decode_u_16(arr[1]),
+      protocol: dco_decode_protocol_type(arr[2]),
+    );
+  }
+
+  @protected
   RsDiscoveredDevice dco_decode_rs_discovered_device(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
@@ -3054,7 +3099,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       fingerprint: dco_decode_String(arr[4]),
       host: dco_decode_String(arr[5]),
       port: dco_decode_u_16(arr[6]),
-      protocol: dco_decode_protocol_type_v_2(arr[7]),
+      protocol: dco_decode_protocol_type(arr[7]),
       download: dco_decode_bool(arr[8]),
     );
   }
@@ -3158,6 +3203,39 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case 8:
         return RsServerEvent_Show(
           args: dco_decode_list_String(raw[1]),
+        );
+      default:
+        throw Exception('unreachable');
+    }
+  }
+
+  @protected
+  RsStoredDevice dco_decode_rs_stored_device(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 7) throw Exception('unexpected arr length: expect 7 but see ${arr.length}');
+    return RsStoredDevice(
+      alias: dco_decode_String(arr[0]),
+      version: dco_decode_String(arr[1]),
+      deviceModel: dco_decode_opt_String(arr[2]),
+      deviceType: dco_decode_opt_box_autoadd_device_type(arr[3]),
+      fingerprint: dco_decode_String(arr[4]),
+      download: dco_decode_bool(arr[5]),
+      channels: dco_decode_list_rs_device_channel(arr[6]),
+    );
+  }
+
+  @protected
+  RsUploadEvent dco_decode_rs_upload_event(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    switch (raw[0]) {
+      case 0:
+        return RsUploadEvent_Progress(
+          progress: dco_decode_f_64(raw[1]),
+        );
+      case 1:
+        return RsUploadEvent_Failed(
+          error: dco_decode_box_autoadd_rs_http_client_error(raw[1]),
         );
       default:
         throw Exception('unreachable');
@@ -3281,19 +3359,33 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  WebSendI18n dco_decode_web_send_i_18_n(dynamic raw) {
+  WebI18n dco_decode_web_i_18_n(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 8) throw Exception('unexpected arr length: expect 8 but see ${arr.length}');
-    return WebSendI18n(
+    if (arr.length != 10) throw Exception('unexpected arr length: expect 10 but see ${arr.length}');
+    return WebI18n(
       waiting: dco_decode_String(arr[0]),
       enterPin: dco_decode_String(arr[1]),
       invalidPin: dco_decode_String(arr[2]),
       tooManyAttempts: dco_decode_String(arr[3]),
       rejected: dco_decode_String(arr[4]),
-      files: dco_decode_String(arr[5]),
-      fileName: dco_decode_String(arr[6]),
-      size: dco_decode_String(arr[7]),
+      uploadRejected: dco_decode_String(arr[5]),
+      busy: dco_decode_String(arr[6]),
+      files: dco_decode_String(arr[7]),
+      fileName: dco_decode_String(arr[8]),
+      size: dco_decode_String(arr[9]),
+    );
+  }
+
+  @protected
+  WebParams dco_decode_web_params(dynamic raw) {
+    // Codec=Dco (DartCObject based), see doc to use other codecs
+    final arr = raw as List<dynamic>;
+    if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    return WebParams(
+      send: dco_decode_opt_box_autoadd_web_send_params(arr[0]),
+      upload: dco_decode_bool(arr[1]),
+      i18N: dco_decode_web_i_18_n(arr[2]),
     );
   }
 
@@ -3301,11 +3393,10 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   WebSendParams dco_decode_web_send_params(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     final arr = raw as List<dynamic>;
-    if (arr.length != 3) throw Exception('unexpected arr length: expect 3 but see ${arr.length}');
+    if (arr.length != 2) throw Exception('unexpected arr length: expect 2 but see ${arr.length}');
     return WebSendParams(
       files: dco_decode_Map_String_file_dto_None(arr[0]),
       pin: dco_decode_opt_String(arr[1]),
-      i18N: dco_decode_web_send_i_18_n(arr[2]),
     );
   }
 
@@ -3639,12 +3730,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RustStreamSink<RsDiscoveredDevice> sse_decode_StreamSink_rs_discovered_device_Sse(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    throw UnimplementedError('Unreachable ()');
-  }
-
-  @protected
   RustStreamSink<RsHashFileEvent> sse_decode_StreamSink_rs_hash_file_event_Sse(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
@@ -3652,6 +3737,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   @protected
   RustStreamSink<RsServerEvent> sse_decode_StreamSink_rs_server_event_Sse(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
+  RustStreamSink<RsStoredDevice> sse_decode_StreamSink_rs_stored_device_Sse(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    throw UnimplementedError('Unreachable ()');
+  }
+
+  @protected
+  RustStreamSink<RsUploadEvent> sse_decode_StreamSink_rs_upload_event_Sse(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     throw UnimplementedError('Unreachable ()');
   }
@@ -3787,6 +3884,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RsHttpClientError sse_decode_box_autoadd_rs_http_client_error(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_rs_http_client_error(deserializer));
+  }
+
+  @protected
+  RsStoredDevice sse_decode_box_autoadd_rs_stored_device(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_rs_stored_device(deserializer));
+  }
+
+  @protected
   RTCSendFileResponse sse_decode_box_autoadd_rtc_send_file_response(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_rtc_send_file_response(deserializer));
@@ -3802,6 +3911,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_box_autoadd_u_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return (sse_decode_u_32(deserializer));
+  }
+
+  @protected
+  WebParams sse_decode_box_autoadd_web_params(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    return (sse_decode_web_params(deserializer));
   }
 
   @protected
@@ -3984,6 +4099,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  List<RsDeviceChannel> sse_decode_list_rs_device_channel(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var len_ = sse_decode_i_32(deserializer);
+    var ans_ = <RsDeviceChannel>[];
+    for (var idx_ = 0; idx_ < len_; ++idx_) {
+      ans_.add(sse_decode_rs_device_channel(deserializer));
+    }
+    return ans_;
+  }
+
+  @protected
   LsHttpClientVersion sse_decode_ls_http_client_version(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var inner = sse_decode_i_32(deserializer);
@@ -4082,11 +4209,11 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  RsDiscoveredDevice? sse_decode_opt_box_autoadd_rs_discovered_device(SseDeserializer deserializer) {
+  RsStoredDevice? sse_decode_opt_box_autoadd_rs_stored_device(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     if (sse_decode_bool(deserializer)) {
-      return (sse_decode_box_autoadd_rs_discovered_device(deserializer));
+      return (sse_decode_box_autoadd_rs_stored_device(deserializer));
     } else {
       return null;
     }
@@ -4109,6 +4236,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
     if (sse_decode_bool(deserializer)) {
       return (sse_decode_box_autoadd_u_32(deserializer));
+    } else {
+      return null;
+    }
+  }
+
+  @protected
+  WebParams? sse_decode_opt_box_autoadd_web_params(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    if (sse_decode_bool(deserializer)) {
+      return (sse_decode_box_autoadd_web_params(deserializer));
     } else {
       return null;
     }
@@ -4197,13 +4335,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  ProtocolTypeV2 sse_decode_protocol_type_v_2(SseDeserializer deserializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    var inner = sse_decode_i_32(deserializer);
-    return ProtocolTypeV2.values[inner];
-  }
-
-  @protected
   (Dart2RustStreamSink, Dart2RustStreamReceiver)
   sse_decode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_dart_2_rust_stream_sink_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_dart_2_rust_stream_receiver(
     SseDeserializer deserializer,
@@ -4262,7 +4393,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_deviceType = sse_decode_opt_box_autoadd_device_type(deserializer);
     var var_fingerprint = sse_decode_String(deserializer);
     var var_port = sse_decode_u_16(deserializer);
-    var var_protocol = sse_decode_protocol_type_v_2(deserializer);
+    var var_protocol = sse_decode_protocol_type(deserializer);
     var var_download = sse_decode_bool(deserializer);
     return RegisterDtoV2(
       alias: var_alias,
@@ -4304,6 +4435,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RsDeviceChannel sse_decode_rs_device_channel(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_host = sse_decode_String(deserializer);
+    var var_port = sse_decode_u_16(deserializer);
+    var var_protocol = sse_decode_protocol_type(deserializer);
+    return RsDeviceChannel(host: var_host, port: var_port, protocol: var_protocol);
+  }
+
+  @protected
   RsDiscoveredDevice sse_decode_rs_discovered_device(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_alias = sse_decode_String(deserializer);
@@ -4313,7 +4453,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     var var_fingerprint = sse_decode_String(deserializer);
     var var_host = sse_decode_String(deserializer);
     var var_port = sse_decode_u_16(deserializer);
-    var var_protocol = sse_decode_protocol_type_v_2(deserializer);
+    var var_protocol = sse_decode_protocol_type(deserializer);
     var var_download = sse_decode_bool(deserializer);
     return RsDiscoveredDevice(
       alias: var_alias,
@@ -4430,6 +4570,44 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  RsStoredDevice sse_decode_rs_stored_device(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_alias = sse_decode_String(deserializer);
+    var var_version = sse_decode_String(deserializer);
+    var var_deviceModel = sse_decode_opt_String(deserializer);
+    var var_deviceType = sse_decode_opt_box_autoadd_device_type(deserializer);
+    var var_fingerprint = sse_decode_String(deserializer);
+    var var_download = sse_decode_bool(deserializer);
+    var var_channels = sse_decode_list_rs_device_channel(deserializer);
+    return RsStoredDevice(
+      alias: var_alias,
+      version: var_version,
+      deviceModel: var_deviceModel,
+      deviceType: var_deviceType,
+      fingerprint: var_fingerprint,
+      download: var_download,
+      channels: var_channels,
+    );
+  }
+
+  @protected
+  RsUploadEvent sse_decode_rs_upload_event(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    var tag_ = sse_decode_i_32(deserializer);
+    switch (tag_) {
+      case 0:
+        var var_progress = sse_decode_f_64(deserializer);
+        return RsUploadEvent_Progress(progress: var_progress);
+      case 1:
+        var var_error = sse_decode_box_autoadd_rs_http_client_error(deserializer);
+        return RsUploadEvent_Failed(error: var_error);
+      default:
+        throw UnimplementedError('');
+    }
+  }
+
+  @protected
   RTCFileError sse_decode_rtc_file_error(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_fileId = sse_decode_String(deserializer);
@@ -4535,22 +4713,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  WebSendI18n sse_decode_web_send_i_18_n(SseDeserializer deserializer) {
+  WebI18n sse_decode_web_i_18_n(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_waiting = sse_decode_String(deserializer);
     var var_enterPin = sse_decode_String(deserializer);
     var var_invalidPin = sse_decode_String(deserializer);
     var var_tooManyAttempts = sse_decode_String(deserializer);
     var var_rejected = sse_decode_String(deserializer);
+    var var_uploadRejected = sse_decode_String(deserializer);
+    var var_busy = sse_decode_String(deserializer);
     var var_files = sse_decode_String(deserializer);
     var var_fileName = sse_decode_String(deserializer);
     var var_size = sse_decode_String(deserializer);
-    return WebSendI18n(
+    return WebI18n(
       waiting: var_waiting,
       enterPin: var_enterPin,
       invalidPin: var_invalidPin,
       tooManyAttempts: var_tooManyAttempts,
       rejected: var_rejected,
+      uploadRejected: var_uploadRejected,
+      busy: var_busy,
       files: var_files,
       fileName: var_fileName,
       size: var_size,
@@ -4558,12 +4740,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  WebParams sse_decode_web_params(SseDeserializer deserializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    var var_send = sse_decode_opt_box_autoadd_web_send_params(deserializer);
+    var var_upload = sse_decode_bool(deserializer);
+    var var_i18N = sse_decode_web_i_18_n(deserializer);
+    return WebParams(send: var_send, upload: var_upload, i18N: var_i18N);
+  }
+
+  @protected
   WebSendParams sse_decode_web_send_params(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     var var_files = sse_decode_Map_String_file_dto_None(deserializer);
     var var_pin = sse_decode_opt_String(deserializer);
-    var var_i18N = sse_decode_web_send_i_18_n(deserializer);
-    return WebSendParams(files: var_files, pin: var_pin, i18N: var_i18N);
+    return WebSendParams(files: var_files, pin: var_pin);
   }
 
   @protected
@@ -4960,20 +5150,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_StreamSink_rs_discovered_device_Sse(RustStreamSink<RsDiscoveredDevice> self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_String(
-      self.setupAndSerialize(
-        codec: SseCodec(
-          decodeSuccessData: sse_decode_rs_discovered_device,
-          decodeErrorData: sse_decode_AnyhowException,
-        ),
-      ),
-      serializer,
-    );
-  }
-
-  @protected
   void sse_encode_StreamSink_rs_hash_file_event_Sse(RustStreamSink<RsHashFileEvent> self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(
@@ -4994,6 +5170,34 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       self.setupAndSerialize(
         codec: SseCodec(
           decodeSuccessData: sse_decode_rs_server_event,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_StreamSink_rs_stored_device_Sse(RustStreamSink<RsStoredDevice> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_rs_stored_device,
+          decodeErrorData: sse_decode_AnyhowException,
+        ),
+      ),
+      serializer,
+    );
+  }
+
+  @protected
+  void sse_encode_StreamSink_rs_upload_event_Sse(RustStreamSink<RsUploadEvent> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(
+      self.setupAndSerialize(
+        codec: SseCodec(
+          decodeSuccessData: sse_decode_rs_upload_event,
           decodeErrorData: sse_decode_AnyhowException,
         ),
       ),
@@ -5155,6 +5359,18 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_box_autoadd_rs_http_client_error(RsHttpClientError self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_rs_http_client_error(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_rs_stored_device(RsStoredDevice self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_rs_stored_device(self, serializer);
+  }
+
+  @protected
   void sse_encode_box_autoadd_rtc_send_file_response(RTCSendFileResponse self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_rtc_send_file_response(self, serializer);
@@ -5170,6 +5386,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   void sse_encode_box_autoadd_u_32(int self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_u_32(self, serializer);
+  }
+
+  @protected
+  void sse_encode_box_autoadd_web_params(WebParams self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_web_params(self, serializer);
   }
 
   @protected
@@ -5322,6 +5544,15 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_list_rs_device_channel(List<RsDeviceChannel> self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_i_32(self.length, serializer);
+    for (final item in self) {
+      sse_encode_rs_device_channel(item, serializer);
+    }
+  }
+
+  @protected
   void sse_encode_ls_http_client_version(LsHttpClientVersion self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_i_32(self.index, serializer);
@@ -5411,12 +5642,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_opt_box_autoadd_rs_discovered_device(RsDiscoveredDevice? self, SseSerializer serializer) {
+  void sse_encode_opt_box_autoadd_rs_stored_device(RsStoredDevice? self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
 
     sse_encode_bool(self != null, serializer);
     if (self != null) {
-      sse_encode_box_autoadd_rs_discovered_device(self, serializer);
+      sse_encode_box_autoadd_rs_stored_device(self, serializer);
     }
   }
 
@@ -5437,6 +5668,16 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_bool(self != null, serializer);
     if (self != null) {
       sse_encode_box_autoadd_u_32(self, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_opt_box_autoadd_web_params(WebParams? self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+
+    sse_encode_bool(self != null, serializer);
+    if (self != null) {
+      sse_encode_box_autoadd_web_params(self, serializer);
     }
   }
 
@@ -5514,12 +5755,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_protocol_type_v_2(ProtocolTypeV2 self, SseSerializer serializer) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_i_32(self.index, serializer);
-  }
-
-  @protected
   void
   sse_encode_record_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_dart_2_rust_stream_sink_auto_owned_rust_opaque_flutter_rust_bridgefor_generated_rust_auto_opaque_inner_dart_2_rust_stream_receiver(
     (Dart2RustStreamSink, Dart2RustStreamReceiver) self,
@@ -5566,7 +5801,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_opt_box_autoadd_device_type(self.deviceType, serializer);
     sse_encode_String(self.fingerprint, serializer);
     sse_encode_u_16(self.port, serializer);
-    sse_encode_protocol_type_v_2(self.protocol, serializer);
+    sse_encode_protocol_type(self.protocol, serializer);
     sse_encode_bool(self.download, serializer);
   }
 
@@ -5589,6 +5824,14 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
+  void sse_encode_rs_device_channel(RsDeviceChannel self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.host, serializer);
+    sse_encode_u_16(self.port, serializer);
+    sse_encode_protocol_type(self.protocol, serializer);
+  }
+
+  @protected
   void sse_encode_rs_discovered_device(RsDiscoveredDevice self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.alias, serializer);
@@ -5598,7 +5841,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     sse_encode_String(self.fingerprint, serializer);
     sse_encode_String(self.host, serializer);
     sse_encode_u_16(self.port, serializer);
-    sse_encode_protocol_type_v_2(self.protocol, serializer);
+    sse_encode_protocol_type(self.protocol, serializer);
     sse_encode_bool(self.download, serializer);
   }
 
@@ -5688,6 +5931,31 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       case RsServerEvent_Show(args: final args):
         sse_encode_i_32(8, serializer);
         sse_encode_list_String(args, serializer);
+    }
+  }
+
+  @protected
+  void sse_encode_rs_stored_device(RsStoredDevice self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_String(self.alias, serializer);
+    sse_encode_String(self.version, serializer);
+    sse_encode_opt_String(self.deviceModel, serializer);
+    sse_encode_opt_box_autoadd_device_type(self.deviceType, serializer);
+    sse_encode_String(self.fingerprint, serializer);
+    sse_encode_bool(self.download, serializer);
+    sse_encode_list_rs_device_channel(self.channels, serializer);
+  }
+
+  @protected
+  void sse_encode_rs_upload_event(RsUploadEvent self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    switch (self) {
+      case RsUploadEvent_Progress(progress: final progress):
+        sse_encode_i_32(0, serializer);
+        sse_encode_f_64(progress, serializer);
+      case RsUploadEvent_Failed(error: final error):
+        sse_encode_i_32(1, serializer);
+        sse_encode_box_autoadd_rs_http_client_error(error, serializer);
     }
   }
 
@@ -5788,16 +6056,26 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   }
 
   @protected
-  void sse_encode_web_send_i_18_n(WebSendI18n self, SseSerializer serializer) {
+  void sse_encode_web_i_18_n(WebI18n self, SseSerializer serializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_String(self.waiting, serializer);
     sse_encode_String(self.enterPin, serializer);
     sse_encode_String(self.invalidPin, serializer);
     sse_encode_String(self.tooManyAttempts, serializer);
     sse_encode_String(self.rejected, serializer);
+    sse_encode_String(self.uploadRejected, serializer);
+    sse_encode_String(self.busy, serializer);
     sse_encode_String(self.files, serializer);
     sse_encode_String(self.fileName, serializer);
     sse_encode_String(self.size, serializer);
+  }
+
+  @protected
+  void sse_encode_web_params(WebParams self, SseSerializer serializer) {
+    // Codec=Sse (Serialization based), see doc to use other codecs
+    sse_encode_opt_box_autoadd_web_send_params(self.send, serializer);
+    sse_encode_bool(self.upload, serializer);
+    sse_encode_web_i_18_n(self.i18N, serializer);
   }
 
   @protected
@@ -5805,7 +6083,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     sse_encode_Map_String_file_dto_None(self.files, serializer);
     sse_encode_opt_String(self.pin, serializer);
-    sse_encode_web_send_i_18_n(self.i18N, serializer);
   }
 
   @protected
@@ -5995,12 +6272,15 @@ class RsDiscoveryImpl extends RustOpaque implements RsDiscovery {
   /// The confirmed device is also emitted on [RsDiscovery::listen].
   /// Returns `None` when the device did not answer or answered with this
   /// device's own fingerprint (i.e. the device discovered itself).
-  Future<RsDiscoveredDevice?> discover({required String host, required int port, required ProtocolTypeV2 protocol}) =>
+  Future<RsStoredDevice?> discover({required String host, required int port, required ProtocolType protocol}) =>
       RustLib.instance.api.crateApiDiscoveryRsDiscoveryDiscover(that: this, host: host, port: port, protocol: protocol);
 
-  /// Emits a [RsDiscoveredDevice] for every device confirmation until the
+  /// Emits a [RsStoredDevice] for every device confirmation until the
   /// discovery is stopped. Can only be listened to once.
-  Stream<RsDiscoveredDevice> listen() => RustLib.instance.api.crateApiDiscoveryRsDiscoveryListen(
+  ///
+  /// Also returns when the Dart side of the stream is gone (e.g. after a
+  /// hot restart), so this call does not keep the discovery alive forever.
+  Stream<RsStoredDevice> listen() => RustLib.instance.api.crateApiDiscoveryRsDiscoveryListen(
     that: this,
   );
 
@@ -6018,7 +6298,7 @@ class RsDiscoveryImpl extends RustOpaque implements RsDiscovery {
   /// this method returns once the whole scan has finished. At most one scan
   /// runs per interface: a call for an address that is still being scanned
   /// returns immediately.
-  Future<void> scanSubnet({required String interfaceIp, required int port, required ProtocolTypeV2 protocol}) =>
+  Future<void> scanSubnet({required String interfaceIp, required int port, required ProtocolType protocol}) =>
       RustLib.instance.api.crateApiDiscoveryRsDiscoveryScanSubnet(that: this, interfaceIp: interfaceIp, port: port, protocol: protocol);
 
   /// Sets whether announcements of other devices are answered with a
@@ -6080,7 +6360,13 @@ class RsHttpClientImpl extends RustOpaque implements RsHttpClient {
     required RegisterDto payload,
   }) => RustLib.instance.api.crateApiHttpRsHttpClientRegister(that: this, protocol: protocol, ip: ip, port: port, payload: payload);
 
-  Stream<double> upload({
+  /// Uploads a single file, emitting [RsUploadEvent]s on [sink].
+  ///
+  /// Failures are emitted as [RsUploadEvent::Failed] instead of being
+  /// returned: flutter_rust_bridge discards the returned `Result` of
+  /// functions taking a [StreamSink], so a returned error would become an
+  /// uncaught async error killing the calling isolate.
+  Stream<RsUploadEvent> upload({
     required ProtocolType protocol,
     required String ip,
     required int port,
@@ -6155,6 +6441,9 @@ class RsHttpServerImpl extends RustOpaque implements RsHttpServer {
   ///
   /// The v2 protocol, the web send (download API), and the internal endpoint
   /// events are all emitted on the same stream.
+  ///
+  /// Also returns when the Dart side of the stream is gone (e.g. after a
+  /// hot restart), so this call does not keep the server alive forever.
   Stream<RsServerEvent> listen() => RustLib.instance.api.crateApiServerRsHttpServerListen(
     that: this,
   );
@@ -6171,7 +6460,10 @@ class RsHttpServerImpl extends RustOpaque implements RsHttpServer {
   /// and waits until the file has been received completely.
   ///
   /// The progress (fraction of [file_size]) is emitted on [sink]
-  /// while the file is being received.
+  /// while the file is being received. Failures are emitted on [sink] as
+  /// well: flutter_rust_bridge discards the returned `Result` of functions
+  /// taking a [StreamSink], so a returned error would become an uncaught
+  /// async error killing the calling isolate.
   ///
   /// Timestamps provided in the sender's file metadata are applied to the
   /// written file by the server.
