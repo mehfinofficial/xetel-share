@@ -281,7 +281,7 @@ class _Translations$networkInterfacesPage$gl extends Translations$networkInterfa
   String get title => 'Interfaces de rede';
   @override
   String get info =>
-      'Por defecto, LocalSend emprega todas as interfaces de rede dispoñíbeis. Eiquí podes desactivar as redes non desexadas. Tes que reiniciar o servidor para aplicar os cambios.';
+      'Por defecto, Xetel Share emprega todas as interfaces de rede dispoñíbeis. Eiquí podes desactivar as redes non desexadas. Tes que reiniciar o servidor para aplicar os cambios.';
   @override
   String get preview => 'Vista previa';
   @override
@@ -370,7 +370,7 @@ class _Translations$receiveOptionsPage$gl extends Translations$receiveOptionsPag
   @override
   String get destination => _root.settingsTab.receive.destination;
   @override
-  String get appDirectory => '(Cartafol Localsend)';
+  String get appDirectory => '(Cartafol Xetel Share)';
   @override
   String get saveToGallery => _root.settingsTab.receive.saveToGallery;
   @override
@@ -447,7 +447,7 @@ class _Translations$webSharePage$gl extends Translations$webSharePage$en {
   @override
   String pinHint({required Object pin}) => 'O PIN é "${pin}"';
   @override
-  String get encryptionHint => 'LocalSend precisa un certificado autoasinado. Tes que aceptalo no teu navegador.';
+  String get encryptionHint => 'Xetel Share precisa un certificado autoasinado. Tes que aceptalo no teu navegador.';
   @override
   String pendingRequests({required Object n}) => 'Solicitudes pendentes: ${n}';
 }
@@ -460,10 +460,10 @@ class _Translations$aboutPage$gl extends Translations$aboutPage$en {
 
   // Translations
   @override
-  String get title => 'Acerca de LocalSend';
+  String get title => 'Acerca de Xetel Share';
   @override
   List<String> get description => [
-    'LocalSend é unha aplicación gratuita, de código aberto, que che permite compartir ficheiros e mensaxes de xeito seguro con dispositivos cercanos a través da túa rede local sen necesidade dunha conexión a internet.',
+    'Xetel Share é unha aplicación gratuita, de código aberto, que che permite compartir ficheiros e mensaxes de xeito seguro con dispositivos cercanos a través da túa rede local sen necesidade dunha conexión a internet.',
     'Esta aplicación está dispoñíbel en Android, iOS, macOS, Windows e Linux. Podes atopar todas as opcións de descarga na páxina web oficial.',
   ];
   @override
@@ -590,7 +590,7 @@ class _Translations$tray$gl extends Translations$tray$en {
   @override
   String get open => _root.general.open;
   @override
-  String get close => 'Saír de LocalSend';
+  String get close => 'Saír de Xetel Share';
   @override
   String get closeWindows => 'Saír';
 }
@@ -801,7 +801,7 @@ class _Translations$settingsTab$general$gl extends Translations$settingsTab$gene
   @override
   String get launchMinimized => 'Arranque automático: Iniciar minimizada';
   @override
-  String get showInContextMenu => 'Amosar LocalSend no menú contextual';
+  String get showInContextMenu => 'Amosar Xetel Share no menú contextual';
   @override
   String get animations => 'Animacións';
 }
@@ -899,7 +899,7 @@ class _Translations$settingsTab$other$gl extends Translations$settingsTab$other$
   @override
   String get title => 'Outros';
   @override
-  String get support => 'Apoia a LocalSend';
+  String get support => 'Apoia a Xetel Share';
   @override
   String get donate => 'Doar';
   @override
@@ -1208,7 +1208,7 @@ class _Translations$dialogs$localNetworkUnauthorized$gl extends Translations$dia
   String get title => _root.dialogs.noPermission.title;
   @override
   String get description =>
-      'LocalSend non pode atopar outros dispositivos sen ter permiso para escanear a rede local. Por favor, concede este permiso na configuración.';
+      'Xetel Share non pode atopar outros dispositivos sen ter permiso para escanear a rede local. Por favor, concede este permiso na configuración.';
   @override
   String get gotoSettings => 'Axustes';
 }
@@ -1352,7 +1352,7 @@ class _Translations$dialogs$sendModeHelp$gl extends Translations$dialogs$sendMod
   String get multiple => 'Envia ficheiros a múltiples receptores. A selección non se borrará unha vez rematada a transferencia de ficheiros.';
   @override
   String get link =>
-      'Os destinatarios que non teñan instalado LocalSend poden descargar os ficheiros seleccionados abrindo a ligazón no seu navegador.';
+      'Os destinatarios que non teñan instalado Xetel Share poden descargar os ficheiros seleccionados abrindo a ligazón no seu navegador.';
 }
 
 // Path: dialogs.zoom

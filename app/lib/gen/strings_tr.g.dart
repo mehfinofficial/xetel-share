@@ -281,7 +281,7 @@ class _Translations$networkInterfacesPage$tr extends Translations$networkInterfa
   String get title => 'Ağ Arayüzleri';
   @override
   String get info =>
-      'Varsayılan olarak, LocalSend mevcut olan tüm ağları kullanır. Burada istenmeyen ağları engelleyebilirsiniz. Değişikliklerin uygulanması için sunucuyu yeniden başlatmanız gerekir.';
+      'Varsayılan olarak, Xetel Share mevcut olan tüm ağları kullanır. Burada istenmeyen ağları engelleyebilirsiniz. Değişikliklerin uygulanması için sunucuyu yeniden başlatmanız gerekir.';
   @override
   String get preview => 'Önizle';
   @override
@@ -370,7 +370,7 @@ class _Translations$receiveOptionsPage$tr extends Translations$receiveOptionsPag
   @override
   String get destination => _root.settingsTab.receive.destination;
   @override
-  String get appDirectory => '(LocalSend klasörü)';
+  String get appDirectory => '(Xetel Share klasörü)';
   @override
   String get saveToGallery => _root.settingsTab.receive.saveToGallery;
   @override
@@ -449,7 +449,7 @@ class _Translations$webSharePage$tr extends Translations$webSharePage$en {
   @override
   String pinHint({required Object pin}) => 'PIN "${pin}"';
   @override
-  String get encryptionHint => 'LocalSend, tarayıcıda kabul etmeniz gereken kendi-üretimli bir sertifika kullanır.';
+  String get encryptionHint => 'Xetel Share, tarayıcıda kabul etmeniz gereken kendi-üretimli bir sertifika kullanır.';
   @override
   String pendingRequests({required Object n}) => 'Bekleyen istekler: ${n}';
 }
@@ -462,10 +462,10 @@ class _Translations$aboutPage$tr extends Translations$aboutPage$en {
 
   // Translations
   @override
-  String get title => 'LocalSend hakkında';
+  String get title => 'Xetel Share hakkında';
   @override
   List<String> get description => [
-    'LocalSend, internet bağlantısına ihtiyaç duymadan yerel ağınız üzerinden yakınınızdaki cihazlarla dosya ve mesajlarınızı güvenli bir şekilde paylaşmanıza olanak tanıyan özgür ve açık kaynaklı bir uygulamadır.',
+    'Xetel Share, internet bağlantısına ihtiyaç duymadan yerel ağınız üzerinden yakınınızdaki cihazlarla dosya ve mesajlarınızı güvenli bir şekilde paylaşmanıza olanak tanıyan özgür ve açık kaynaklı bir uygulamadır.',
     'Bu uygulama Android, iOS, macOS, Windows ve Linux\'ta mevcuttur. Tüm indirme seçeneklerini resmi ana sayfada bulabilirsiniz.',
   ];
   @override
@@ -489,7 +489,7 @@ class _Translations$donationPage$tr extends Translations$donationPage$en {
   String get title => 'Bağış yap';
   @override
   String get info =>
-      'LocalSend ücretsiz, açık kaynaklı ve reklamsız bir uygulamadır. Eğer uygulamayı beğendiyseniz, bağış yaparak uygulamanın gelişimine katkıda bulunabilirsiniz.';
+      'Xetel Share ücretsiz, açık kaynaklı ve reklamsız bir uygulamadır. Eğer uygulamayı beğendiyseniz, bağış yaparak uygulamanın gelişimine katkıda bulunabilirsiniz.';
   @override
   String donate({required Object amount}) => 'Bağışta bulun ${amount}';
   @override
@@ -592,7 +592,7 @@ class _Translations$tray$tr extends Translations$tray$en {
   @override
   String get open => _root.general.open;
   @override
-  String get close => 'LocalSend\'den çık';
+  String get close => 'Xetel Share\'den çık';
   @override
   String get closeWindows => 'Çıkış';
 }
@@ -803,7 +803,7 @@ class _Translations$settingsTab$general$tr extends Translations$settingsTab$gene
   @override
   String get launchMinimized => 'Otomatik başlatma: Gizli Başlatma';
   @override
-  String get showInContextMenu => 'LocalSend\'i bağlam menüsünde göster';
+  String get showInContextMenu => 'Xetel Share\'i bağlam menüsünde göster';
   @override
   String get animations => 'Animasyonlar';
 }
@@ -901,7 +901,7 @@ class _Translations$settingsTab$other$tr extends Translations$settingsTab$other$
   @override
   String get title => 'Diğer';
   @override
-  String get support => 'LocalSend\'i destekle';
+  String get support => 'Xetel Share\'i destekle';
   @override
   String get donate => 'Bağış yap';
   @override
@@ -1209,7 +1209,7 @@ class _Translations$dialogs$localNetworkUnauthorized$tr extends Translations$dia
   @override
   String get title => _root.dialogs.noPermission.title;
   @override
-  String get description => 'LocalSend, lokal ağı tarama iznine sahip olmadan başka cihazları bulamıyor. Lütfen bu izni ayarlarda verin.';
+  String get description => 'Xetel Share, lokal ağı tarama iznine sahip olmadan başka cihazları bulamıyor. Lütfen bu izni ayarlarda verin.';
   @override
   String get gotoSettings => 'Ayarlar';
 }
@@ -1352,7 +1352,7 @@ class _Translations$dialogs$sendModeHelp$tr extends Translations$dialogs$sendMod
   @override
   String get multiple => 'Dosyaları birden çok alıcıya gönderir. Seçim temizlenmeyecektir.';
   @override
-  String get link => 'LocalSend yüklü olmayan alıcılar, tarayıcılarındaki bağlantıyı açarak seçilen dosyaları indirebilir.';
+  String get link => 'Xetel Share yüklü olmayan alıcılar, tarayıcılarındaki bağlantıyı açarak seçilen dosyaları indirebilir.';
 }
 
 // Path: dialogs.zoom
